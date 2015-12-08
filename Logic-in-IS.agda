@@ -121,7 +121,7 @@ open import Relation.Nullary using (yes;no;Dec)
    v 'r' = t
    v _   = f
 
-問1-2' : ∀ p q r v → (Dec (v ⟦ (((p ∨ q) ⊃ r) ∨ (p ∧ q)) ⟧ ≈ t))
+問1-2' : ∀ p q r v → (Dec (v ⟦ (((p ∨ q) ⊃ r) ∨ (p ∧ q)) ⟧ ≈ f))
 問1-2' p q r v = {!!}
 
 
@@ -268,10 +268,15 @@ data 証明図[終式_] : Set → Set where
           (¬右 [] [ A ] A 
           (始式 A))))) 
 
-{-
 例1-12' : (A : 論理式) → 証明図[終式 (⟶ [ A ∨ ¬ A ]) ]
-例1-12' A = {!!}
--}
+例1-12' A = c2 (c2 (c2 (c2 (c2 (c2 (c1 A) 
+            (λ _ → 始式 A))
+            (¬右 [] [ A ] A)) 
+            (∨右2 [] [ A ] A (¬ A))) 
+            (exchange右 [] [] [] A (A ∨ ¬ A))) 
+            (∨右1 [] [ A ∨ ¬ A ] A (¬ A))) 
+            (contraction右 [] [] (A ∨ ¬ A))
+
 証明可能 : (Γ Δ : List 論理式) → Set
 証明可能 Γ Δ = 証明図[終式 Γ ⟶ Δ ]
 
