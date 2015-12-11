@@ -35,7 +35,7 @@ infix 100 ¬_
 例1-1 = < 'p' > ⊃ ( < 'q' > ∨ ¬ < 'r' >)
 
 open import Data.Bool 
-  renaming (true to t; false to f;_∧_ to _and_;_∨_ to _or_)
+  renaming (true to t; false to f;_∧_ to _and_;_∨_ to _or_) public
 
 
 -------------------------
@@ -55,8 +55,8 @@ v ⟦ A ∨ B ⟧   = v ⟦ A ⟧ or  v ⟦ B ⟧
 v ⟦ A ⊃ B ⟧   = not (v ⟦ A ⟧) or v ⟦ B ⟧
 v ⟦ ¬ A ⟧     = not (v ⟦ A ⟧)
 
-open import Relation.Binary.PropositionalEquality as PropEq 
-  renaming (_≡_ to _≈_) hiding ([_])
+open import Relation.Binary.PropositionalEquality 
+  renaming (_≡_ to _≈_) hiding ([_]) 
 -- ≡はあとで定義したいのでrenameする。
 
 open import Data.Product renaming (_,_ to _&_)
