@@ -5,36 +5,70 @@ module LK where
 -- P.23
 
 open import PropositionalLogic public
-open import Data.List renaming (_++_ to _,_)
+open import Data.List renaming (_++_ to _,_) hiding ([_])
+open import Data.Product renaming (_,_ to _+_)
 
---TODO data 式 のコンストラクタが_⟶_である、というdeepEmbeddingのほうがいいかもしれない。
--- 式
-infix 1 _⟶_ -- U+27F6
-data _⟶_ : List 論理式 → List 論理式 → Set where
-  始式 : (A : 論理式) → [ A ] ⟶ [ A ]
+infix 2 _⟶_ -- U+27F6
+data 式 : Set where
+  n : 式 -- 明示されていないが、空の式というものもあると考えたほうが便利かと。
+  _⟶_ : List 論理式 → List 論理式 → 式
+
+nil : 式 × 式
+nil = n + n
+
+infix 4 [_]
+[_] : 論理式 → List 論理式
+[ A ] = A ∷ []
+
+infix 3 ⟨_⟩
+⟨_⟩ : 式 → 式 × 式
+⟨ S ⟩ = S + n
+
+infix 1 _/_
+-- 証明図の横棒を'/'で表現する。
+data _/_ : 式 × 式 → 式 → Set where
+  始式 : (A : 論理式) → nil / ([ A ] ⟶ [ A ])
+
   -- 構造に関する推論規則 P.24
-  weakening左 : ∀ Γ Δ A → (Γ ⟶ Δ) → ([ A ] , Γ ⟶ Δ)
-  weakening右 : ∀ Γ Δ A → (Γ ⟶ Δ) → (Γ ⟶ Δ , [ A ])
-  contraction左 : ∀ Γ Δ A → ([ A ] , [ A ] , Γ ⟶ Δ) → ([ A ] , Γ ⟶ Δ)
-  contraction右 : ∀ Γ Δ A → (Γ ⟶ Δ , [ A ] , [ A ]) → (Γ ⟶ Δ , [ A ])
-  exchange左 : ∀ Γ Δ Π A B  → (Γ , [ A ] , [ B ] , Π ⟶ Δ) → (Γ , [ B ] , [ A ] , Π ⟶ Δ) 
-  exchange右 : ∀ Γ Δ Σ A B  → (Γ ⟶ Δ , [ A ] , [ B ] , Σ) → (Γ ⟶ Δ , [ B ] , [ A ] , Σ) 
-  cut : ∀ Γ Δ Π Σ A  → (Π ⟶ Δ , [ A ]) → ([ A ] , Π ⟶ Σ) → (Γ , Π ⟶ Δ , Σ)
+  weakening左   : ∀ Γ Δ A → ⟨ Γ ⟶ Δ ⟩ / [ A ] , Γ ⟶ Δ
+  weakening右   : ∀ Γ Δ A → ⟨ Γ ⟶ Δ ⟩ / Γ ⟶ Δ , [ A ]
+
+  contraction左 : ∀ Γ Δ A → ⟨ [ A ]  , [ A ] , Γ ⟶ Δ ⟩ / [ A ] , Γ ⟶ Δ
+  contraction右 : ∀ Γ Δ A → ⟨ Γ ⟶ Δ , [ A ] , [ A ] ⟩  / Γ ⟶ Δ , [ A ]
+
+  exchange左    : ∀ Γ Δ Π A B → ⟨ Γ , [ A ] , [ B ] , Π ⟶ Δ ⟩ / Γ , [ B ] , [ A ] , Π ⟶ Δ 
+  exchange右    : ∀ Γ Δ Σ A B → ⟨ Γ ⟶ Δ , [ A ] , [ B ] , Σ ⟩ / Γ ⟶ Δ , [ B ] , [ A ] , Σ 
+
+  cut          : ∀ Γ Δ Π Σ A → (Π ⟶ Δ , [ A ]) + ([ A ] , Π ⟶ Σ) / Γ , Π ⟶ Δ , Σ
+
   -- 論理結合子に関する推論規則 P.26
-  ∧左1 : ∀ Γ Δ A B → ([ A ] , Γ ⟶ Δ) → ([ A ∧ B ] , Γ ⟶ Δ)
-  ∧左2 : ∀ Γ Δ A B → ([ B ] , Γ ⟶ Δ) → ([ A ∧ B ] , Γ ⟶ Δ)
-  ∧右  : ∀ Γ Δ A B → (Γ ⟶ Δ , [ A ]) → (Γ ⟶ Δ , [ B ]) → (Γ ⟶ Δ , [ A ∧ B ])
-  ∨左  : ∀ Γ Δ A B → ([ A ] , Γ ⟶ Δ) → ([ B ] , Γ ⟶ Δ) → ([ A ∨ B ] , Γ ⟶ Δ)
-  ∨右1 : ∀ Γ Δ A B → (Γ ⟶ Δ , [ A ]) → (Γ ⟶ Δ , [ A ∨ B ])
-  ∨右2 : ∀ Γ Δ A B → (Γ ⟶ Δ , [ B ]) → (Γ ⟶ Δ , [ A ∨ B ])
-  ⊃左 : ∀ Γ Δ Π Σ A B → (Γ ⟶ Δ , [ A ]) → ([ B ] , Π ⟶ Σ) → ([ A ⊃ B ] , Γ , Π ⟶ Δ , Σ)
-  ⊃右 : ∀ Γ Δ A B → ([ A ] , Γ ⟶ Δ , [ B ]) → (Γ ⟶ Δ , [ A ⊃ B ])
-  ¬左 : ∀ Γ Δ A → (Γ ⟶ Δ , [ A ]) → ([ ¬ A ] , Γ ⟶ Δ)
-  ¬右 : ∀ Γ Δ A → ([ A ] , Γ ⟶ Δ) → (Γ ⟶ Δ , [ ¬ A ])
+  ∧左1 : ∀ Γ Δ A B → ⟨ [ A ] , Γ ⟶ Δ ⟩ / [ A ∧ B ] , Γ ⟶ Δ
+  ∧左2 : ∀ Γ Δ A B → ⟨ [ B ] , Γ ⟶ Δ ⟩ / [ A ∧ B ] , Γ ⟶ Δ
+  ∧右  : ∀ Γ Δ A B → (Γ ⟶ Δ , [ A ]) + (Γ ⟶ Δ , [ B ]) / (Γ ⟶ Δ , [ A ∧ B ])
+  ∨左  : ∀ Γ Δ A B → ([ A ] , Γ ⟶ Δ) + ([ B ] , Γ ⟶ Δ) / ([ A ∨ B ] , Γ ⟶ Δ)
+  ∨右1 : ∀ Γ Δ A B → ⟨ Γ ⟶ Δ , [ A ] ⟩ / Γ ⟶ Δ , [ A ∨ B ]
+  ∨右2 : ∀ Γ Δ A B → ⟨ Γ ⟶ Δ , [ B ] ⟩ / Γ ⟶ Δ , [ A ∨ B ]
+  ⊃左 : ∀ Γ Δ Π Σ A B → (Γ ⟶ Δ , [ A ]) + ([ B ] , Π ⟶ Σ) / [ A ⊃ B ] , Γ , Π ⟶ Δ , Σ
+  ⊃右 : ∀ Γ Δ A B     → ⟨ [ A ] , Γ ⟶ Δ , [ B ] ⟩ / Γ ⟶ Δ , [ A ⊃ B ]
+  ¬左 : ∀ Γ Δ A   → ⟨ Γ ⟶ Δ , [ A ] ⟩ / [ ¬ A ] , Γ ⟶ Δ
+  ¬右 : ∀ Γ Δ A   → ⟨ [ A ] , Γ ⟶ Δ ⟩ / Γ ⟶ Δ , [ ¬ A ]
 
 -- syntax sugar
-⟶_ : List 論理式 → Set
+⟶_ : List 論理式 → 式
 ⟶ A = [] ⟶ A
+
+例1-12 : ∀ A → {!!} / ⟶ [ A ∨ ¬ A ] -- 問1-13でもある
+例1-12 A = {!!}
+{-
+contraction右 [] [] (A ∨ ¬ A)
+          (∨右1 [] [ A ∨ ¬ A ] A (¬ A)
+          (exchange右 [] [] [] A (A ∨ ¬ A)
+          (∨右2 [] [ A ] A (¬ A)
+          (¬右 [] [ A ] A
+          (始式 A)))))
+-}
+
+{-
 
 -- P.27 定義1.3
 data 証明図[終式_] : Set → Set where
@@ -46,13 +80,6 @@ data 証明図[終式_] : Set → Set where
                       → (A ⟶ B → C ⟶ D → E ⟶ F) → 証明図[終式 E ⟶ F ]
 
 
-例1-12 : ∀ A → [] ⟶ [ A ∨ ¬ A ] -- 問1-13でもある
-例1-12 A = contraction右 [] [] (A ∨ ¬ A)
-          (∨右1 [] [ A ∨ ¬ A ] A (¬ A)
-          (exchange右 [] [] [] A (A ∨ ¬ A)
-          (∨右2 [] [ A ] A (¬ A)
-          (¬右 [] [ A ] A
-          (始式 A)))))
 
 例1-12' : (A : 論理式) → 証明図[終式 (⟶ [ A ∨ ¬ A ]) ]
 例1-12' A = c2 (c2 (c2 (c2 (c2 (c2 (c1 A)
@@ -97,7 +124,8 @@ open import Relation.Binary.PropositionalEquality
 定理1-7 {seq = ∨左 Γ ._ A B seq seq₁} proof v = {!!}
 定理1-7 {seq = ∨右1 ._ Δ A B seq} proof v = {!!}
 定理1-7 {seq = ∨右2 ._ Δ A B seq} proof v = {!!}
-定理1-7 {seq = ⊃左 Γ Δ Π Σ A B seq seq₁} proof v = {!!}
+定理1-7 {seq = ⊃左 Γ Δ Π Σ A B Γ→ΔA BΠ→Σ} proof v = {!!}
 定理1-7 {seq = ⊃右 ._ Δ A B seq} proof v = {!!}
 定理1-7 {seq = ¬左 Γ ._ A seq} proof v = {!!}
 定理1-7 {seq = ¬右 ._ Δ A seq} proof v = {!!}
+-}
