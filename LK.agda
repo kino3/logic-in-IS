@@ -4,15 +4,19 @@
 module LK where
 -- P.23
 
-open import PropositionalLogic public
+open import PropositionalLogic public renaming (トートロジー to トートロジー')
 open import Data.List renaming (_++_ to _,_) hiding ([_])
 open import Data.Product renaming (_,_ to _+_)
+open import Relation.Binary using (IsEquivalence)
+open import Relation.Binary.PropositionalEquality renaming (_≡_ to _≈_; refl to r) hiding ([_];sym;trans)
+open import Data.Unit renaming (⊤ to True)
 
 infix 2 _⟶_ -- U+27F6
 data 式 : Set where
-  n : 式 -- 明示されていないが、空の式というものもあると考えたほうが便利かと。
+  n : 式 -- 明示されていないが、空の式というものもあると考えたほうが便利。
   _⟶_ : List 論理式 → List 論理式 → 式
 
+-- Syntax sugars
 nil : 式 × 式
 nil = n + n
 
@@ -25,73 +29,76 @@ infix 3 ⟨_⟩
 ⟨ S ⟩ = S + n
 
 infix 1 _/_
--- 証明図の横棒を'/'で表現する。
-data _/_ : 式 × 式 → 式 → Set where
-  始式 : (A : 論理式) → nil / ([ A ] ⟶ [ A ])
+{-
+ 証明図の横棒を'/'で表現する。
+ 証明図には上式2,下式1のものと上式1,下式1のものがある。両方に対応するため、
+ _/_というのは式2つの上の関係であると定義する。
+-}
+data _/_ : 式 × 式 → 式 × 式 → Set where
+  --始式 : (A : 論理式) → nil / ⟨ ([ A ] ⟶ [ A ]) ⟩
+  -- 始式に相当するものはAがあればいつでも我々はつくれるので、コンストラクタとしては不要?
 
   -- 構造に関する推論規則 P.24
-  weakening左   : ∀ Γ Δ A → ⟨ Γ ⟶ Δ ⟩ / [ A ] , Γ ⟶ Δ
-  weakening右   : ∀ Γ Δ A → ⟨ Γ ⟶ Δ ⟩ / Γ ⟶ Δ , [ A ]
+  weakening左   : ∀ Γ Δ A → ⟨ Γ ⟶ Δ ⟩ / ⟨ [ A ] , Γ ⟶ Δ ⟩
+  weakening右   : ∀ Γ Δ A → ⟨ Γ ⟶ Δ ⟩ / ⟨ Γ ⟶ Δ , [ A ] ⟩
 
-  contraction左 : ∀ Γ Δ A → ⟨ [ A ]  , [ A ] , Γ ⟶ Δ ⟩ / [ A ] , Γ ⟶ Δ
-  contraction右 : ∀ Γ Δ A → ⟨ Γ ⟶ Δ , [ A ] , [ A ] ⟩  / Γ ⟶ Δ , [ A ]
+  contraction左 : ∀ Γ Δ A → ⟨ [ A ]  , [ A ] , Γ ⟶ Δ ⟩ / ⟨ [ A ] , Γ ⟶ Δ ⟩
+  contraction右 : ∀ Γ Δ A → ⟨ Γ ⟶ Δ , [ A ] , [ A ] ⟩  / ⟨ Γ ⟶ Δ , [ A ] ⟩
 
-  exchange左    : ∀ Γ Δ Π A B → ⟨ Γ , [ A ] , [ B ] , Π ⟶ Δ ⟩ / Γ , [ B ] , [ A ] , Π ⟶ Δ 
-  exchange右    : ∀ Γ Δ Σ A B → ⟨ Γ ⟶ Δ , [ A ] , [ B ] , Σ ⟩ / Γ ⟶ Δ , [ B ] , [ A ] , Σ 
+  exchange左    : ∀ Γ Δ Π A B → ⟨ Γ , [ A ] , [ B ] , Π ⟶ Δ ⟩ / ⟨ Γ , [ B ] , [ A ] , Π ⟶ Δ ⟩
+  exchange右    : ∀ Γ Δ Σ A B → ⟨ Γ ⟶ Δ , [ A ] , [ B ] , Σ ⟩ / ⟨ Γ ⟶ Δ , [ B ] , [ A ] , Σ ⟩
 
-  cut          : ∀ Γ Δ Π Σ A → (Π ⟶ Δ , [ A ]) + ([ A ] , Π ⟶ Σ) / Γ , Π ⟶ Δ , Σ
+  cut          : ∀ Γ Δ Π Σ A → (Π ⟶ Δ , [ A ]) + ([ A ] , Π ⟶ Σ) / ⟨ Γ , Π ⟶ Δ , Σ ⟩
 
   -- 論理結合子に関する推論規則 P.26
-  ∧左1 : ∀ Γ Δ A B → ⟨ [ A ] , Γ ⟶ Δ ⟩ / [ A ∧ B ] , Γ ⟶ Δ
-  ∧左2 : ∀ Γ Δ A B → ⟨ [ B ] , Γ ⟶ Δ ⟩ / [ A ∧ B ] , Γ ⟶ Δ
-  ∧右  : ∀ Γ Δ A B → (Γ ⟶ Δ , [ A ]) + (Γ ⟶ Δ , [ B ]) / (Γ ⟶ Δ , [ A ∧ B ])
-  ∨左  : ∀ Γ Δ A B → ([ A ] , Γ ⟶ Δ) + ([ B ] , Γ ⟶ Δ) / ([ A ∨ B ] , Γ ⟶ Δ)
-  ∨右1 : ∀ Γ Δ A B → ⟨ Γ ⟶ Δ , [ A ] ⟩ / Γ ⟶ Δ , [ A ∨ B ]
-  ∨右2 : ∀ Γ Δ A B → ⟨ Γ ⟶ Δ , [ B ] ⟩ / Γ ⟶ Δ , [ A ∨ B ]
-  ⊃左 : ∀ Γ Δ Π Σ A B → (Γ ⟶ Δ , [ A ]) + ([ B ] , Π ⟶ Σ) / [ A ⊃ B ] , Γ , Π ⟶ Δ , Σ
-  ⊃右 : ∀ Γ Δ A B     → ⟨ [ A ] , Γ ⟶ Δ , [ B ] ⟩ / Γ ⟶ Δ , [ A ⊃ B ]
-  ¬左 : ∀ Γ Δ A   → ⟨ Γ ⟶ Δ , [ A ] ⟩ / [ ¬ A ] , Γ ⟶ Δ
-  ¬右 : ∀ Γ Δ A   → ⟨ [ A ] , Γ ⟶ Δ ⟩ / Γ ⟶ Δ , [ ¬ A ]
+  ∧左1 : ∀ Γ Δ A B → ⟨ [ A ] , Γ ⟶ Δ ⟩ / ⟨ [ A ∧ B ] , Γ ⟶ Δ ⟩
+  ∧左2 : ∀ Γ Δ A B → ⟨ [ B ] , Γ ⟶ Δ ⟩ / ⟨ [ A ∧ B ] , Γ ⟶ Δ ⟩
+  ∧右  : ∀ Γ Δ A B → (Γ ⟶ Δ , [ A ]) + (Γ ⟶ Δ , [ B ]) / ⟨ (Γ ⟶ Δ , [ A ∧ B ]) ⟩
+  ∨左  : ∀ Γ Δ A B → ([ A ] , Γ ⟶ Δ) + ([ B ] , Γ ⟶ Δ) / ⟨ ([ A ∨ B ] , Γ ⟶ Δ) ⟩
+  ∨右1 : ∀ Γ Δ A B → ⟨ Γ ⟶ Δ , [ A ] ⟩ / ⟨ Γ ⟶ Δ , [ A ∨ B ] ⟩
+  ∨右2 : ∀ Γ Δ A B → ⟨ Γ ⟶ Δ , [ B ] ⟩ / ⟨ Γ ⟶ Δ , [ A ∨ B ] ⟩
+  ⊃左 : ∀ Γ Δ Π Σ A B → (Γ ⟶ Δ , [ A ]) + ([ B ] , Π ⟶ Σ) / ⟨ [ A ⊃ B ] , Γ , Π ⟶ Δ , Σ ⟩
+  ⊃右 : ∀ Γ Δ A B     → ⟨ [ A ] , Γ ⟶ Δ , [ B ] ⟩ / ⟨ Γ ⟶ Δ , [ A ⊃ B ] ⟩
+  ¬左 : ∀ Γ Δ A   → ⟨ Γ ⟶ Δ , [ A ] ⟩ / ⟨ [ ¬ A ] , Γ ⟶ Δ ⟩
+  ¬右 : ∀ Γ Δ A   → ⟨ [ A ] , Γ ⟶ Δ ⟩ / ⟨ Γ ⟶ Δ , [ ¬ A ] ⟩
 
 -- syntax sugar
 ⟶_ : List 論理式 → 式
 ⟶ A = [] ⟶ A
 
-例1-12 : ∀ A → {!!} / ⟶ [ A ∨ ¬ A ] -- 問1-13でもある
-例1-12 A = {!!}
+-- TODO: prove!
 {-
-contraction右 [] [] (A ∨ ¬ A)
-          (∨右1 [] [ A ∨ ¬ A ] A (¬ A)
-          (exchange右 [] [] [] A (A ∨ ¬ A)
-          (∨右2 [] [ A ] A (¬ A)
-          (¬右 [] [ A ] A
-          (始式 A)))))
+proof : IsEquivalence _/_
+proof = record { 
+  refl  = refl-proof;
+  sym   = {!!} ; 
+  trans = {!!} }
+  where
+    refl-proof : ∀ {formulas} → formulas / formulas
+    refl-proof {x} = {!!}
 -}
 
-{-
+-- 証明すべきだが、大変なのでとりあえずpostulateしておく。
+-- これがないと、下式をまた上式にしてよい、ということがAgda的にはわからない。
+postulate
+  refl  : ∀ {x} → x / x
+  sym   : ∀ {x y} → x / y → y / x
+  trans : ∀ {x y z} → x / y → y / z → x / z 
 
--- P.27 定義1.3
-data 証明図[終式_] : Set → Set where
-  c1 : (A : 論理式) → 証明図[終式 (⟶ [ A ]) ]
-  c2 : {A B C D : List 論理式}
-         (P1 : 証明図[終式 A ⟶ B ]) → (A ⟶ B → C ⟶ D) → 証明図[終式 C ⟶ D ]
-  c3 : {A B C D E F : List 論理式}
-         (P1 : 証明図[終式 A ⟶ B ]) (P2 : 証明図[終式 C ⟶ D ])
-                      → (A ⟶ B → C ⟶ D → E ⟶ F) → 証明図[終式 E ⟶ F ]
+証明可能 : 式 → Set
+証明可能 S = Σ[ s1 ∈ 式 ] Σ[ s2 ∈ 式 ] (s1 + s2 / ⟨ S ⟩)
+-- 始式s1,s2をうまいこととってくれば、Sに至る証明図が書ける、という感じ。
 
+式_は_である : 式 → (式 → Set) → Set
+式 S は P である = P S
 
-
-例1-12' : (A : 論理式) → 証明図[終式 (⟶ [ A ∨ ¬ A ]) ]
-例1-12' A = c2 (c2 (c2 (c2 (c2 (c2 (c1 A)
-            (λ _ → 始式 A))
-            (¬右 [] [ A ] A))
-            (∨右2 [] [ A ] A (¬ A)))
-            (exchange右 [] [] [] A (A ∨ ¬ A)))
-            (∨右1 [] [ A ∨ ¬ A ] A (¬ A)))
-            (contraction右 [] [] (A ∨ ¬ A))
-
-証明可能 : {Γ Δ : List 論理式} → Γ ⟶ Δ → Set
-証明可能 {Γ} {Δ} seq = 証明図[終式 Γ ⟶ Δ ]
+例1-12 : ∀ A → 式 (⟶ [ A ∨ ¬ A ]) は 証明可能 である 
+例1-12 A = ([ A ] ⟶ [ A ]) + (n + 
+           trans (¬右 [] [ A ] A) 
+          (trans (∨右2 [] [ A ] A (¬ A)) 
+          (trans (exchange右 [] [] [] A (A ∨ ¬ A)) 
+          (trans (∨右1 [] [ A ∨ ¬ A ] A (¬ A)) 
+          (trans (contraction右 [] [] (A ∨ ¬ A)) refl)))))
 
 -- P.32 トートロジーの式への拡張
 _* : List 論理式 → 論理式
@@ -102,30 +109,32 @@ _` : List 論理式 → 論理式 -- 下付き*はないので代用
 [] `       = ⊤
 (x ∷ xs) ` = x ∧ (xs `)
 
-トートロジー' : (Γ Δ : List 論理式) → Set
-トートロジー' Γ Δ = トートロジー ((Γ `) ⊃ (Δ *))
+トートロジー : 式 → Set
+トートロジー n        = True
+トートロジー (Γ ⟶ Δ) = トートロジー' ((Γ `) ⊃ (Δ *)) --
 
-open import Relation.Binary.PropositionalEquality
--- 健全性定理
-定理1-7 : ∀ {Γ Δ seq} → 証明可能 {Γ} {Δ} seq  → トートロジー' Γ Δ
-定理1-7 {seq = 始式 A} proof v with v ⟦ A ⟧
-定理1-7 {.(A ∷ [])} {.(A ∷ [])} {始式 A} proof v | t = refl
-定理1-7 {.(A ∷ [])} {.(A ∷ [])} {始式 A} proof v | f = refl
-定理1-7 {seq = weakening左 Γ ._ A seq} proof v = {!!}
-定理1-7 {seq = weakening右 ._ Δ A seq} proof v = {!!}
-定理1-7 {seq = contraction左 Γ ._ A seq} proof v = {!!}
-定理1-7 {seq = contraction右 ._ Δ A seq} proof v = {!!}
-定理1-7 {seq = exchange左 Γ ._ Π A B seq} proof v = {!!}
-定理1-7 {seq = exchange右 ._ Δ Σ A B seq} proof v = {!!}
-定理1-7 {seq = cut Γ Δ Π Σ A seq seq₁} proof v = {!!}
-定理1-7 {seq = ∧左1 Γ ._ A B seq} proof v = {!!}
-定理1-7 {seq = ∧左2 Γ ._ A B seq} proof v = {!!}
-定理1-7 {seq = ∧右 ._ Δ A B seq seq₁} proof v = {!!}
-定理1-7 {seq = ∨左 Γ ._ A B seq seq₁} proof v = {!!}
-定理1-7 {seq = ∨右1 ._ Δ A B seq} proof v = {!!}
-定理1-7 {seq = ∨右2 ._ Δ A B seq} proof v = {!!}
-定理1-7 {seq = ⊃左 Γ Δ Π Σ A B Γ→ΔA BΠ→Σ} proof v = {!!}
-定理1-7 {seq = ⊃右 ._ Δ A B seq} proof v = {!!}
-定理1-7 {seq = ¬左 Γ ._ A seq} proof v = {!!}
-定理1-7 {seq = ¬右 ._ Δ A seq} proof v = {!!}
--}
+Lemma1-7-1 : ∀ A → 式 [ A ] ⟶ [ A ]  は トートロジー である
+Lemma1-7-1 A v with v ⟦ A ⟧
+Lemma1-7-1 A v | t = r
+Lemma1-7-1 A v | f = r
+
+-- 健全性定理 定理1.7
+健全性定理 : ∀ S → 式 S は 証明可能 である → 式 S は トートロジー である
+健全性定理 n prf = tt
+健全性定理 (.(A ∷ Γ) ⟶ Δ) (.(Γ ⟶ Δ) + .n + weakening左 Γ .Δ A) v = {!!}
+健全性定理 (Γ ⟶ .(Δ , A ∷ [])) (.(Γ ⟶ Δ) + .n + weakening右 .Γ Δ A) v = {!!}
+健全性定理 (.(A ∷ Γ) ⟶ Δ) (.(A ∷ A ∷ Γ ⟶ Δ) + .n + contraction左 Γ .Δ A) v = {!!}
+健全性定理 (Γ ⟶ .(Δ , A ∷ [])) (.(Γ ⟶ Δ , A ∷ A ∷ []) + .n + contraction右 .Γ Δ A) v = {!!}
+健全性定理 (.(Γ , B ∷ A ∷ Π) ⟶ Δ) (.(Γ , A ∷ B ∷ Π ⟶ Δ) + .n + exchange左 Γ .Δ Π A B) v = {!!}
+健全性定理 (Γ ⟶ .(Δ , B ∷ A ∷ Σ)) (.(Γ ⟶ Δ , A ∷ B ∷ Σ) + .n + exchange右 .Γ Δ Σ A B) v = {!!}
+健全性定理 (.(Γ , Π) ⟶ .(Δ , Σ)) (.(Π ⟶ Δ , A ∷ []) + .(A ∷ Π ⟶ Σ) + cut Γ Δ Π Σ A) v = {!!}
+健全性定理 (.(A ∧ B ∷ Γ) ⟶ Δ) (.(A ∷ Γ ⟶ Δ) + .n + ∧左1 Γ .Δ A B) v = {!!}
+健全性定理 (.(A ∧ B ∷ Γ) ⟶ Δ) (.(B ∷ Γ ⟶ Δ) + .n + ∧左2 Γ .Δ A B) v = {!!}
+健全性定理 (Γ ⟶ .(Δ , A ∧ B ∷ [])) (.(Γ ⟶ Δ , A ∷ []) + .(Γ ⟶ Δ , B ∷ []) + ∧右 .Γ Δ A B) v = {!!}
+健全性定理 (.(A ∨ B ∷ Γ) ⟶ Δ) (.(A ∷ Γ ⟶ Δ) + .(B ∷ Γ ⟶ Δ) + ∨左 Γ .Δ A B) v = {!!}
+健全性定理 (Γ ⟶ .(Δ , A ∨ B ∷ [])) (.(Γ ⟶ Δ , A ∷ []) + .n + ∨右1 .Γ Δ A B) v = {!!}
+健全性定理 (Γ ⟶ .(Δ , A ∨ B ∷ [])) (.(Γ ⟶ Δ , B ∷ []) + .n + ∨右2 .Γ Δ A B) v = {!!}
+健全性定理 (.(A ⊃ B ∷ Γ , Π) ⟶ .(Δ , Σ)) (.(Γ ⟶ Δ , A ∷ []) + .(B ∷ Π ⟶ Σ) + ⊃左 Γ Δ Π Σ A B) v = {!!}
+健全性定理 (Γ ⟶ .(Δ , A ⊃ B ∷ [])) (.(A ∷ Γ ⟶ Δ , B ∷ []) + .n + ⊃右 .Γ Δ A B) v = {!!}
+健全性定理 (.(¬ A ∷ Γ) ⟶ Δ) (.(Γ ⟶ Δ , A ∷ []) + .n + ¬左 Γ .Δ A) v = {!!}
+健全性定理 (Γ ⟶ .(Δ , ¬ A ∷ [])) (.(A ∷ Γ ⟶ Δ) + .n + ¬右 .Γ Δ A) v = {!!}
