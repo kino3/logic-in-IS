@@ -8,7 +8,7 @@ open import PropositionalLogic public renaming (トートロジー to トート�
 open import Data.List renaming (_++_ to _,_) hiding ([_])
 open import Data.Product renaming (_,_ to _+_)
 open import Relation.Binary using (IsEquivalence)
-open import Relation.Binary.PropositionalEquality renaming (_≡_ to _≈_; refl to r) hiding ([_];sym;trans)
+open import Relation.Binary.PropositionalEquality renaming (_≡_ to _≈_; refl to ok) hiding ([_];sym;trans)
 open import Data.Unit renaming (⊤ to True)
 
 infix 2 _⟶_ -- U+27F6
@@ -35,9 +35,6 @@ infix 1 _/_
  _/_というのは式2つの上の関係であると定義する。
 -}
 data _/_ : 式 × 式 → 式 × 式 → Set where
-  --始式 : (A : 論理式) → nil / ⟨ ([ A ] ⟶ [ A ]) ⟩
-  -- 始式に相当するものはAがあればいつでも我々はつくれるので、コンストラクタとしては不要?
-
   -- 構造に関する推論規則 P.24
   weakening左   : ∀ Γ Δ A → ⟨ Γ ⟶ Δ ⟩ / ⟨ [ A ] , Γ ⟶ Δ ⟩
   weakening右   : ∀ Γ Δ A → ⟨ Γ ⟶ Δ ⟩ / ⟨ Γ ⟶ Δ , [ A ] ⟩
@@ -74,6 +71,10 @@ postulate
   trans : ∀ {x y z} → x / y → y / z → x / z 
 -}
 
+{- 
+ 始式というのは特定の式のことを指しているのだから、ある意味式の性質であり、この型が妥当かと。
+ こう定義することで他の推論規則とは区別される。
+-}
 data 始式 : 式 → Set where
   init : (A : 論理式) → 始式 ([ A ] ⟶ [ A ])
 
@@ -113,10 +114,10 @@ _` : List 論理式 → 論理式 -- 下付き*はないので代用
 トートロジー n        = True
 トートロジー (Γ ⟶ Δ) = トートロジー' ((Γ `) ⊃ (Δ *)) --
 
-Lemma1-7-1 : ∀ A → 式 [ A ] ⟶ [ A ]  は トートロジー である
-Lemma1-7-1 A v with v ⟦ A ⟧
-Lemma1-7-1 A v | t = r
-Lemma1-7-1 A v | f = r
+Lemma1-7-1 : ∀ seq → 始式 seq → 式 seq  は トートロジー である
+Lemma1-7-1 .([ A ] ⟶ [ A ]) (init A) v with v ⟦ A ⟧
+Lemma1-7-1 .([ A ] ⟶ [ A ]) (init A) v | t = ok
+Lemma1-7-1 .([ A ] ⟶ [ A ]) (init A) v | f = ok
 
 Lemma1-7-2 : ∀ S1 S2 S3 S4 → S1 + S2 / S3 + S4 
   → 式 S1 は トートロジー である → 式 S2 は トートロジー である → (式 S3 は トートロジー である × 式 S4 は トートロジー である) 
