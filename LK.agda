@@ -119,9 +119,27 @@ Lemma1-7-1 .([ A ] ⟶ [ A ]) (init A) v with v ⟦ A ⟧
 Lemma1-7-1 .([ A ] ⟶ [ A ]) (init A) v | t = ok
 Lemma1-7-1 .([ A ] ⟶ [ A ]) (init A) v | f = ok
 
+open import Relation.Nullary.Negation using (contradiction)
 Lemma1-7-2 : ∀ S1 S2 S3 → S1 + S2 / ⟨ S3 ⟩ 
   → 式 S1 は トートロジー である → 式 S2 は トートロジー である → 式 S3 は トートロジー である
-Lemma1-7-2 S1 S2 S3 a/b prf1 prf2 = {!!}
+Lemma1-7-2 .(Γ ⟶ Δ) .n .(A ∷ Γ ⟶ Δ) (weakening左 Γ Δ A) prf1 tt v = ?
+
+Lemma1-7-2 .(Γ ⟶ Δ) .n .(Γ ⟶ Δ , A ∷ []) (weakening右 Γ Δ A) prf1 prf2 v = {!!}
+Lemma1-7-2 .(A ∷ A ∷ Γ ⟶ Δ) .n .(A ∷ Γ ⟶ Δ) (contraction左 Γ Δ A) prf1 prf2 v = {!!}
+Lemma1-7-2 .(Γ ⟶ Δ , A ∷ A ∷ []) .n .(Γ ⟶ Δ , A ∷ []) (contraction右 Γ Δ A) prf1 prf2 v = {!!}
+Lemma1-7-2 .(Γ , A ∷ B ∷ Π ⟶ Δ) .n .(Γ , B ∷ A ∷ Π ⟶ Δ) (exchange左 Γ Δ Π A B) prf1 prf2 v = {!!}
+Lemma1-7-2 .(Γ ⟶ Δ , A ∷ B ∷ Σ) .n .(Γ ⟶ Δ , B ∷ A ∷ Σ) (exchange右 Γ Δ Σ A B) prf1 prf2 v = {!!}
+Lemma1-7-2 .(Π ⟶ Δ , A ∷ []) .(A ∷ Π ⟶ Σ) .(Γ , Π ⟶ Δ , Σ) (cut Γ Δ Π Σ A) prf1 prf2 v = {!!}
+Lemma1-7-2 .(A ∷ Γ ⟶ Δ) .n .(A ∧ B ∷ Γ ⟶ Δ) (∧左1 Γ Δ A B) prf1 prf2 v = {!!}
+Lemma1-7-2 .(B ∷ Γ ⟶ Δ) .n .(A ∧ B ∷ Γ ⟶ Δ) (∧左2 Γ Δ A B) prf1 prf2 v = {!!}
+Lemma1-7-2 .(Γ ⟶ Δ , A ∷ []) .(Γ ⟶ Δ , B ∷ []) .(Γ ⟶ Δ , A ∧ B ∷ []) (∧右 Γ Δ A B) prf1 prf2 v = {!!}
+Lemma1-7-2 .(A ∷ Γ ⟶ Δ) .(B ∷ Γ ⟶ Δ) .(A ∨ B ∷ Γ ⟶ Δ) (∨左 Γ Δ A B) prf1 prf2 v = {!!}
+Lemma1-7-2 .(Γ ⟶ Δ , A ∷ []) .n .(Γ ⟶ Δ , A ∨ B ∷ []) (∨右1 Γ Δ A B) prf1 prf2 v = {!!}
+Lemma1-7-2 .(Γ ⟶ Δ , B ∷ []) .n .(Γ ⟶ Δ , A ∨ B ∷ []) (∨右2 Γ Δ A B) prf1 prf2 v = {!!}
+Lemma1-7-2 .(Γ ⟶ Δ , A ∷ []) .(B ∷ Π ⟶ Σ) .(A ⊃ B ∷ Γ , Π ⟶ Δ , Σ) (⊃左 Γ Δ Π Σ A B) prf1 prf2 v = {!!}
+Lemma1-7-2 .(A ∷ Γ ⟶ Δ , B ∷ []) .n .(Γ ⟶ Δ , A ⊃ B ∷ []) (⊃右 Γ Δ A B) prf1 prf2 v = {!!}
+Lemma1-7-2 .(Γ ⟶ Δ , A ∷ []) .n .(¬ A ∷ Γ ⟶ Δ) (¬左 Γ Δ A) prf1 prf2 v = {!!}
+Lemma1-7-2 .(A ∷ Γ ⟶ Δ) .n .(Γ ⟶ Δ , ¬ A ∷ []) (¬右 Γ Δ A) prf1 prf2 v = {!!}
 
 -- 健全性定理 定理1.7
 健全性定理 : ∀ S → 式 S は 証明可能 である → 式 S は トートロジー である
