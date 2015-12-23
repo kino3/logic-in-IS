@@ -8,7 +8,7 @@ open import PropositionalLogic public renaming (トートロジー to トート�
 open import Data.List renaming (_++_ to _,_) hiding ([_])
 open import Data.Product renaming (_,_ to _+_)
 open import Relation.Binary using (IsEquivalence)
-open import Relation.Binary.PropositionalEquality renaming (_≡_ to _≈_; refl to ok) hiding ([_];sym;trans)
+open import Relation.Binary.PropositionalEquality renaming (_≡_ to _≈_) hiding ([_])
 open import Data.Unit renaming (⊤ to True)
 
 infix 2 _⟶_ -- U+27F6
@@ -116,13 +116,13 @@ _` : List 論理式 → 論理式 -- 下付き*はないので代用
 
 Lemma1-7-1 : ∀ seq → 始式 seq → 式 seq  は トートロジー である
 Lemma1-7-1 .([ A ] ⟶ [ A ]) (init A) v with v ⟦ A ⟧
-Lemma1-7-1 .([ A ] ⟶ [ A ]) (init A) v | t = ok
-Lemma1-7-1 .([ A ] ⟶ [ A ]) (init A) v | f = ok
+Lemma1-7-1 .([ A ] ⟶ [ A ]) (init A) v | t = refl
+Lemma1-7-1 .([ A ] ⟶ [ A ]) (init A) v | f = refl
 
 open import Relation.Nullary.Negation using (contradiction)
 Lemma1-7-2 : ∀ S1 S2 S3 → S1 + S2 / ⟨ S3 ⟩ 
   → 式 S1 は トートロジー である → 式 S2 は トートロジー である → 式 S3 は トートロジー である
-Lemma1-7-2 .(Γ ⟶ Δ) .n .(A ∷ Γ ⟶ Δ) (weakening左 Γ Δ A) prf1 tt v = ?
+Lemma1-7-2 .(Γ ⟶ Δ) .n .(A ∷ Γ ⟶ Δ) (weakening左 Γ Δ A) prf1 tt v = {!!}
 
 Lemma1-7-2 .(Γ ⟶ Δ) .n .(Γ ⟶ Δ , A ∷ []) (weakening右 Γ Δ A) prf1 prf2 v = {!!}
 Lemma1-7-2 .(A ∷ A ∷ Γ ⟶ Δ) .n .(A ∷ Γ ⟶ Δ) (contraction左 Γ Δ A) prf1 prf2 v = {!!}
