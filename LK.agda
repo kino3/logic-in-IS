@@ -66,24 +66,13 @@ data _/_ : 式 × 式 → 式 × 式 → Set where
 ⟶_ : List 論理式 → 式
 ⟶ A = [] ⟶ A
 
--- TODO: prove!
 {-
-proof : IsEquivalence _/_
-proof = record { 
-  refl  = refl-proof;
-  sym   = {!!} ; 
-  trans = {!!} }
-  where
-    refl-proof : ∀ {formulas} → formulas / formulas
-    refl-proof {x} = {!!}
--}
-
--- 証明すべきだが、大変なのでとりあえずpostulateしておく。
--- これがないと、下式をまた上式にしてよい、ということがAgda的にはわからない。
+必要かとおもっていたが、証明図を定義したことで不要になった。
 postulate
   refl  : ∀ {x} → x / x
   sym   : ∀ {x y} → x / y → y / x
   trans : ∀ {x y z} → x / y → y / z → x / z 
+-}
 
 data 始式 : 式 → Set where
   init : (A : 論理式) → 始式 ([ A ] ⟶ [ A ])
@@ -103,15 +92,13 @@ data 証明図[終式_] : 式 → Set where
 式 S は P である = P S
 
 例1-12 : ∀ A → 式 (⟶ [ A ∨ ¬ A ]) は 証明可能 である 
-例1-12 A = {!!} 
-{-
-([ A ] ⟶ [ A ]) + (n + 
-           trans (¬右 [] [ A ] A) 
-          (trans (∨右2 [] [ A ] A (¬ A)) 
-          (trans (exchange右 [] [] [] A (A ∨ ¬ A)) 
-          (trans (∨右1 [] [ A ∨ ¬ A ] A (¬ A)) 
-          (trans (contraction右 [] [] (A ∨ ¬ A)) refl)))))
--}
+例1-12 A = c2 (c2 (c2 (c2 (c2 (c1 
+          (init A)) 
+          (¬右 [] [ A ] A)) 
+          (∨右2 [] [ A ] A (¬ A))) 
+          (exchange右 [] [] [] A (A ∨ ¬ A))) 
+          (∨右1 [] ([ A ∨ ¬ A ]) A (¬ A))) 
+          (contraction右 [] [] (A ∨ ¬ A)) 
 
 -- P.32 トートロジーの式への拡張
 _* : List 論理式 → 論理式
