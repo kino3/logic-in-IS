@@ -85,20 +85,33 @@ postulate
   sym   : ∀ {x y} → x / y → y / x
   trans : ∀ {x y z} → x / y → y / z → x / z 
 
+data 始式 : 式 → Set where
+  init : (A : 論理式) → 始式 ([ A ] ⟶ [ A ])
+
+data 証明図[終式_] : 式 → Set where
+  c1 : {seq : 式} → 始式 seq → 証明図[終式 seq ]
+  c2 : {A B C D : List 論理式}
+         (P1 : 証明図[終式 A ⟶ B ]) → (⟨ A ⟶ B ⟩ / ⟨ C ⟶ D ⟩) → 証明図[終式 C ⟶ D ]
+  c3 : {A B C D E F : List 論理式}
+         (P1 : 証明図[終式 A ⟶ B ]) (P2 : 証明図[終式 C ⟶ D ])
+                      → (A ⟶ B) + (C ⟶ D) / ⟨ E ⟶ F ⟩ → 証明図[終式 E ⟶ F ]
+
 証明可能 : 式 → Set
-証明可能 S = Σ[ s1 ∈ 式 ] Σ[ s2 ∈ 式 ] (s1 + s2 / ⟨ S ⟩)
--- 始式s1,s2をうまいこととってくれば、Sに至る証明図が書ける、という感じ。
+証明可能 S = 証明図[終式 S ]
 
 式_は_である : 式 → (式 → Set) → Set
 式 S は P である = P S
 
 例1-12 : ∀ A → 式 (⟶ [ A ∨ ¬ A ]) は 証明可能 である 
-例1-12 A = ([ A ] ⟶ [ A ]) + (n + 
+例1-12 A = {!!} 
+{-
+([ A ] ⟶ [ A ]) + (n + 
            trans (¬右 [] [ A ] A) 
           (trans (∨右2 [] [ A ] A (¬ A)) 
           (trans (exchange右 [] [] [] A (A ∨ ¬ A)) 
           (trans (∨右1 [] [ A ∨ ¬ A ] A (¬ A)) 
           (trans (contraction右 [] [] (A ∨ ¬ A)) refl)))))
+-}
 
 -- P.32 トートロジーの式への拡張
 _* : List 論理式 → 論理式
@@ -124,4 +137,4 @@ Lemma1-7-2 S1 S2 S3 S4 a/b prf1 prf2 = {!!}
 
 -- 健全性定理 定理1.7
 健全性定理 : ∀ S → 式 S は 証明可能 である → 式 S は トートロジー である
-健全性定理 S (S1 + S2 + S1+S2/S) = {!!}
+健全性定理 S = {!!}
