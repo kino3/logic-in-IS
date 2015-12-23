@@ -119,10 +119,16 @@ Lemma1-7-1 .([ A ] ⟶ [ A ]) (init A) v with v ⟦ A ⟧
 Lemma1-7-1 .([ A ] ⟶ [ A ]) (init A) v | t = ok
 Lemma1-7-1 .([ A ] ⟶ [ A ]) (init A) v | f = ok
 
-Lemma1-7-2 : ∀ S1 S2 S3 S4 → S1 + S2 / S3 + S4 
-  → 式 S1 は トートロジー である → 式 S2 は トートロジー である → (式 S3 は トートロジー である × 式 S4 は トートロジー である) 
-Lemma1-7-2 S1 S2 S3 S4 a/b prf1 prf2 = {!!}
+Lemma1-7-2 : ∀ S1 S2 S3 → S1 + S2 / ⟨ S3 ⟩ 
+  → 式 S1 は トートロジー である → 式 S2 は トートロジー である → 式 S3 は トートロジー である
+Lemma1-7-2 S1 S2 S3 a/b prf1 prf2 = {!!}
 
 -- 健全性定理 定理1.7
 健全性定理 : ∀ S → 式 S は 証明可能 である → 式 S は トートロジー である
-健全性定理 S = {!!}
+健全性定理 n prf = tt
+健全性定理 (.([ A ]) ⟶ .([ A ])) (c1 (init A)) = Lemma1-7-1 ([ A ] ⟶ [ A ]) (init A)
+健全性定理 (Γ ⟶ Δ) (c2 {A} {B} {.Γ} {.Δ} prf x) 
+  = Lemma1-7-2 (A ⟶ B) n (Γ ⟶ Δ) x (健全性定理 (A ⟶ B) prf) tt
+健全性定理 (Γ ⟶ Δ) (c3 {A} {B} {C} {D} {.Γ} {.Δ} prf1 prf2 x) 
+  = Lemma1-7-2 (A ⟶ B) (C ⟶ D) (Γ ⟶ Δ) x (健全性定理 (A ⟶ B) prf1) (健全性定理 (C ⟶ D) prf2) 
+
