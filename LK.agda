@@ -5,11 +5,12 @@ module LK where
 -- P.23
 
 open import PropositionalLogic public renaming (トートロジー to トートロジー')
-open import Data.List renaming (_++_ to _,_) hiding ([_])
+open import Data.List renaming (_++_ to _,_) hiding ([_];and;or)
 open import Data.Product renaming (_,_ to _+_)
 open import Relation.Binary using (IsEquivalence)
-open import Relation.Binary.PropositionalEquality renaming (_≡_ to _≈_) hiding ([_])
+open import Relation.Binary.PropositionalEquality as PropEq renaming (_≡_ to _≈_;[_] to R[_])
 open import Data.Unit renaming (⊤ to True)
+open PropEq.≡-Reasoning -- <- これをかくとbegin...がつかえる。
 
 infix 2 _⟶_ -- U+27F6
 data 式 : Set where
@@ -122,7 +123,22 @@ Lemma1-7-1 .([ A ] ⟶ [ A ]) (init A) v | f = refl
 open import Relation.Nullary.Negation using (contradiction)
 Lemma1-7-2 : ∀ S1 S2 S3 → S1 + S2 / ⟨ S3 ⟩ 
   → 式 S1 は トートロジー である → 式 S2 は トートロジー である → 式 S3 は トートロジー である
-Lemma1-7-2 .(Γ ⟶ Δ) .n .(A ∷ Γ ⟶ Δ) (weakening左 Γ Δ A) prf1 tt v = {!!}
+Lemma1-7-2 .(Γ ⟶ Δ) .n .(A ∷ Γ ⟶ Δ) (weakening左 Γ Δ A) prf1 tt v with v ⟦ A ⟧ | v ⟦ Γ ` ⟧ | v ⟦ Δ * ⟧ | inspect (_⟦_⟧ v) (Γ `) | inspect (_⟦_⟧ v) (Δ *)
+Lemma1-7-2 .(Γ ⟶ Δ) .n .([ A ] , Γ ⟶ Δ) (weakening左 Γ Δ A) prf1 tt v | t | t | t | R[ Γeq ] | R[ Δeq ] = refl
+Lemma1-7-2 .(Γ ⟶ Δ) .n .([ A ] , Γ ⟶ Δ) (weakening左 Γ Δ A) prf1 tt v | t | t | f | R[ Γeq ] | R[ Δeq ] = 
+      begin 
+         f 
+       ≡⟨ refl ⟩ 
+         not t or f
+       ≡⟨ {!sym Γeq!} ⟩ 
+         not (v ⟦ Γ ` ⟧) or f 
+       ≡⟨ {!!} ⟩ 
+         not (v ⟦ Γ ` ⟧) or v ⟦ Δ * ⟧ 
+       ≡⟨ prf1 v ⟩ 
+         t 
+       ∎
+Lemma1-7-2 .(Γ ⟶ Δ) .n .([ A ] , Γ ⟶ Δ) (weakening左 Γ Δ A) prf1 tt v | t | f | d | R[ Γeq ] | R[ Δeq ] = refl
+Lemma1-7-2 .(Γ ⟶ Δ) .n .([ A ] , Γ ⟶ Δ) (weakening左 Γ Δ A) prf1 tt v | f | c | d | R[ Γeq ] | R[ Δeq ] = refl
 
 Lemma1-7-2 .(Γ ⟶ Δ) .n .(Γ ⟶ Δ , A ∷ []) (weakening右 Γ Δ A) prf1 prf2 v = {!!}
 Lemma1-7-2 .(A ∷ A ∷ Γ ⟶ Δ) .n .(A ∷ Γ ⟶ Δ) (contraction左 Γ Δ A) prf1 prf2 v = {!!}
