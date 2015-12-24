@@ -130,13 +130,14 @@ Lemma1-7-2 .(Γ ⟶ Δ) .n .([ A ] , Γ ⟶ Δ) (weakening左 Γ Δ A) prf1 tt v
          f 
        ≡⟨ refl ⟩ 
          not t or f
-       ≡⟨ {!sym Γeq!} ⟩ 
+       ≡⟨ cong₂ (λ x y → not x or y) (sym Γeq) refl ⟩ 
          not (v ⟦ Γ ` ⟧) or f 
-       ≡⟨ {!!} ⟩ 
+       ≡⟨ cong₂ (λ x y → not x or y) refl (sym Γeq) ⟩ 
          not (v ⟦ Γ ` ⟧) or v ⟦ Δ * ⟧ 
        ≡⟨ prf1 v ⟩ 
          t 
        ∎
+
 Lemma1-7-2 .(Γ ⟶ Δ) .n .([ A ] , Γ ⟶ Δ) (weakening左 Γ Δ A) prf1 tt v | t | f | d | R[ Γeq ] | R[ Δeq ] = refl
 Lemma1-7-2 .(Γ ⟶ Δ) .n .([ A ] , Γ ⟶ Δ) (weakening左 Γ Δ A) prf1 tt v | f | c | d | R[ Γeq ] | R[ Δeq ] = refl
 
