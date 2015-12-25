@@ -4,11 +4,11 @@ module PredicateLogic where
 
 open import Data.List
 open import Data.Nat using (ℕ)
+open import Data.Char using (Char)
 
 対象定数 = ℕ
 
-data 対象変数 : Set where
-  p q r s t u v w x y z : 対象変数 --TODO 無限個 Char?
+対象変数 = Char
 
 -- P.60 ●項と論理式
 
@@ -37,5 +37,24 @@ data 論理式 : Set where
   E : 対象変数 → 論理式 → 論理式
 
 sample : 論理式 -- ∀x.(x < 5 ⊃ x < 2×3)
-sample = A x (atom (v x < c 5) ⊃ atom (v x < (c 2 × c 3)))
+sample = A 'x' (atom (v 'x' < c 5) ⊃ atom (v 'x' < (c 2 × c 3)))
 
+-- 定義2.3 束縛された出現と自由な出現
+
+-- 定義2.4 項の代入
+_[_/_] : 項 → 項 → 対象変数 → 項
+s [ t / x ] = {!!}
+
+-- 定義2.5 言語ℒに対する構造S = <U,I>
+--   フラクトゥールのAはやめて単にS(Structure)とした。
+
+{-
+record 解釈 : Set1 where
+  field
+    
+
+record 構造 : Set1 where
+  field
+    U : Set
+    I : 解釈
+-}
