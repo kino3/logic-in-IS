@@ -123,7 +123,9 @@ Lemma1-7-1 .([ A ] ⟶ [ A ]) (init A) v | f = refl
 open import Relation.Nullary.Negation using (contradiction)
 Lemma1-7-2 : ∀ S1 S2 S3 → S1 + S2 / ⟨ S3 ⟩ 
   → 式 S1 は トートロジー である → 式 S2 は トートロジー である → 式 S3 は トートロジー である
-Lemma1-7-2 .(Γ ⟶ Δ) .n .(A ∷ Γ ⟶ Δ) (weakening左 Γ Δ A) prf1 tt v with v ⟦ A ⟧ | v ⟦ Γ ` ⟧ | v ⟦ Δ * ⟧ | inspect (_⟦_⟧ v) (Γ `) | inspect (_⟦_⟧ v) (Δ *)
+-- weakening左
+Lemma1-7-2 .(Γ ⟶ Δ) .n .(A ∷ Γ ⟶ Δ) (weakening左 Γ Δ A) prf1 tt v 
+  with v ⟦ A ⟧ | v ⟦ Γ ` ⟧ | v ⟦ Δ * ⟧ | inspect (_⟦_⟧ v) (Γ `) | inspect (_⟦_⟧ v) (Δ *)
 Lemma1-7-2 .(Γ ⟶ Δ) .n .([ A ] , Γ ⟶ Δ) (weakening左 Γ Δ A) prf1 tt v | t | t | t | R[ Γeq ] | R[ Δeq ] = refl
 Lemma1-7-2 .(Γ ⟶ Δ) .n .([ A ] , Γ ⟶ Δ) (weakening左 Γ Δ A) prf1 tt v | t | t | f | R[ Γeq ] | R[ Δeq ] = 
       begin 
@@ -135,11 +137,14 @@ Lemma1-7-2 .(Γ ⟶ Δ) .n .([ A ] , Γ ⟶ Δ) (weakening左 Γ Δ A) prf1 tt v
        ≡⟨ prf1 v ⟩ 
          t 
        ∎
-
 Lemma1-7-2 .(Γ ⟶ Δ) .n .([ A ] , Γ ⟶ Δ) (weakening左 Γ Δ A) prf1 tt v | t | f | d | R[ Γeq ] | R[ Δeq ] = refl
 Lemma1-7-2 .(Γ ⟶ Δ) .n .([ A ] , Γ ⟶ Δ) (weakening左 Γ Δ A) prf1 tt v | f | c | d | R[ Γeq ] | R[ Δeq ] = refl
+-- weakening右
+Lemma1-7-2 .(Γ ⟶ Δ) .n .(Γ ⟶ Δ , [ A ]) (weakening右 Γ Δ A) prf1 tt v with v ⟦ Γ ` ⟧ | v ⟦ (Δ , [ A ]) * ⟧
+Lemma1-7-2 .(Γ ⟶ Δ) .n .(Γ ⟶ Δ , [ A ]) (weakening右 Γ Δ A) prf1 tt v | t | t = refl
+Lemma1-7-2 .(Γ ⟶ Δ) .n .(Γ ⟶ Δ , [ A ]) (weakening右 Γ Δ A) prf1 tt v | t | f = {!!}
+Lemma1-7-2 .(Γ ⟶ Δ) .n .(Γ ⟶ Δ , [ A ]) (weakening右 Γ Δ A) prf1 tt v | f | b2 = refl
 
-Lemma1-7-2 .(Γ ⟶ Δ) .n .(Γ ⟶ Δ , A ∷ []) (weakening右 Γ Δ A) prf1 prf2 v = {!!}
 Lemma1-7-2 .(A ∷ A ∷ Γ ⟶ Δ) .n .(A ∷ Γ ⟶ Δ) (contraction左 Γ Δ A) prf1 prf2 v = {!!}
 Lemma1-7-2 .(Γ ⟶ Δ , A ∷ A ∷ []) .n .(Γ ⟶ Δ , A ∷ []) (contraction右 Γ Δ A) prf1 prf2 v = {!!}
 Lemma1-7-2 .(Γ , A ∷ B ∷ Π ⟶ Δ) .n .(Γ , B ∷ A ∷ Π ⟶ Δ) (exchange左 Γ Δ Π A B) prf1 prf2 v = {!!}
