@@ -157,8 +157,15 @@ t≡f f () _
 *-is-sym v (x ∷ xs) A t prf | f | t | f | _ | _ = refl
 *-is-sym v (x ∷ xs) A t prf | f | f | f | R[ eqxs ] | R[ eqA ] = 
   t≡f (v ⟦ ([ A ] , xs) * ⟧) (*-is-sym v xs A t prf) (cong₂ _or_ eqA eqxs)
-*-is-sym v (x ∷ xs) A f prf = {!!} 
-
+*-is-sym v (x ∷ xs) A f prf with v ⟦ x ⟧ | v ⟦ xs * ⟧ | v ⟦ A ⟧ | inspect (_⟦_⟧ v) (xs *) | inspect (_⟦_⟧ v) A
+*-is-sym v (x ∷ xs) A f ()  | t | _ | _ | _ | _
+*-is-sym v (x ∷ xs) A f prf | f | t | t | R[ eqxs ] | R[ eqA ] = 
+  t≡f (v ⟦ ([ A ] , xs) * ⟧) (cong₂ _or_ eqA eqxs) (*-is-sym v xs A f prf)
+*-is-sym v (x ∷ xs) A f prf | f | f | t | R[ eqxs ] | R[ eqA ] = 
+  t≡f (v ⟦ ([ A ] , xs) * ⟧) (cong₂ _or_ eqA eqxs) (*-is-sym v xs A f prf)
+*-is-sym v (x ∷ xs) A f prf | f | t | f | R[ eqxs ] | R[ eqA ] = 
+  t≡f (v ⟦ ([ A ] , xs) * ⟧) (cong₂ _or_ eqA eqxs) (*-is-sym v xs A f prf)
+*-is-sym v (x ∷ xs) A f prf | f | f | f | _ | _ = refl
 
 
 subLemma : ∀ v Δ A → v ⟦ (Δ , [ A ]) * ⟧ ≈ f → v ⟦ Δ * ⟧ ≈ f
@@ -214,7 +221,7 @@ Lemma1-7-2 .(Γ ⟶ Δ) .n .(Γ ⟶ Δ , [ A ]) (weakening右 Γ Δ A) prf1 tt v
          f 
        ≡⟨ refl ⟩ 
          not t or f
-       ≡⟨ cong₂ (λ x y → not x or y) (sym Γeq) (sym (subLemma v Δ A ΔAeq)) ⟩ 
+       ≡⟨ cong₂ (λ x y → not x or y) (sym Γeq) {!!} ⟩ --(sym (subLemma v Δ A ΔAeq)) ⟩ 
          not (v ⟦ Γ ` ⟧) or v ⟦ Δ * ⟧ 
        ≡⟨ prf1 v ⟩ 
          t 
