@@ -120,6 +120,47 @@ Lemma1-7-1 .([ A ] ⟶ [ A ]) (init A) v with v ⟦ A ⟧
 Lemma1-7-1 .([ A ] ⟶ [ A ]) (init A) v | t = refl
 Lemma1-7-1 .([ A ] ⟶ [ A ]) (init A) v | f = refl
 
+-- * and or are commute?
+lemma : ∀ v A Δ → v ⟦ Δ * ⟧ or v ⟦ A ⟧ ≈ v ⟦ (Δ , [ A ]) * ⟧ 
+lemma v A [] with v ⟦ A ⟧
+lemma v A [] | t = refl
+lemma v A [] | f = refl
+lemma v A (x ∷ xs) with v ⟦ A ⟧ | v ⟦ x ⟧ | inspect (_⟦_⟧ v) A | inspect (_⟦_⟧ v) x 
+lemma v A (x ∷ xs) | _ | t | _ | _ = refl
+lemma v A (x ∷ xs) | t | f | R[ eqA ] | R[ eqx ] = {!!}
+{-
+  begin        
+   (f or v ⟦ xs * ⟧) or t 
+     ≡⟨ {!!} ⟩ 
+   {!t!}
+     ≡⟨ {!!} ⟩ 
+   f or v ⟦ (xs , A ∷ []) * ⟧ 
+  ∎ --(f or v ⟦ xs * ⟧) or t ≈ f or v ⟦ (xs , A ∷ []) * ⟧
+-}
+lemma v A (x ∷ xs) | f | f | R[ eqA ] | R[ eqx ] = {!!}
+-- (x ∷ xs) * = x ∨ (xs *)
+
+t≡f : {Whatever : Set} (b : Bool) → b ≈ t → b ≈ f → Whatever
+t≡f t _ ()
+t≡f f () _
+
+*-is-sym : ∀ v Δ A b → v ⟦ (Δ , [ A ]) * ⟧ ≈ b → v ⟦ ([ A ] , Δ) * ⟧ ≈ b
+*-is-sym v [] A t prf with v ⟦ A ⟧
+*-is-sym v [] A t prf | t = refl
+*-is-sym v [] A t ()  | f
+*-is-sym v [] A f prf with v ⟦ A ⟧
+*-is-sym v [] A f ()  | t
+*-is-sym v [] A f prf | f = refl
+*-is-sym v (x ∷ xs) A t prf with v ⟦ x ⟧ | v ⟦ xs * ⟧ | v ⟦ A ⟧ | inspect (_⟦_⟧ v) (xs *) | inspect (_⟦_⟧ v) A
+*-is-sym v (x ∷ xs) A t prf | _ | _ | t | _ | _ = refl
+*-is-sym v (x ∷ xs) A t prf | t | _ | f | _ | _ = refl
+*-is-sym v (x ∷ xs) A t prf | f | t | f | _ | _ = refl
+*-is-sym v (x ∷ xs) A t prf | f | f | f | R[ eqxs ] | R[ eqA ] = 
+  t≡f (v ⟦ ([ A ] , xs) * ⟧) (*-is-sym v xs A t prf) (cong₂ _or_ eqA eqxs)
+*-is-sym v (x ∷ xs) A f prf = {!!} 
+
+
+
 subLemma : ∀ v Δ A → v ⟦ (Δ , [ A ]) * ⟧ ≈ f → v ⟦ Δ * ⟧ ≈ f
 subLemma v Δ A prf with v ⟦ Δ * ⟧ | v ⟦ A ⟧ | inspect (_⟦_⟧ v) (Δ *) | inspect (_⟦_⟧ v) (A)
 subLemma v Δ A prf | t | t | R[ Δeq ] | R[ Aeq ] = 
@@ -134,21 +175,18 @@ subLemma v Δ A prf | t | t | R[ Δeq ] | R[ Aeq ] =
    ≡⟨ prf ⟩ 
      f 
    ∎
-  where
-    lemma : ∀ v A Δ → v ⟦ Δ * ⟧ or v ⟦ A ⟧ ≈ v ⟦ (Δ , [ A ]) * ⟧ 
-    lemma v A [] with v ⟦ A ⟧
-    lemma v A [] | t = refl
-    lemma v A [] | f = refl
-    lemma v A (x ∷ xs) with v ⟦ A ⟧ | v ⟦ x ⟧
-    lemma v A (x ∷ xs) | _ | t = refl
-    lemma v A (x ∷ xs) | t | f rewrite lemma v A xs = {!!}
-    lemma v A (x ∷ xs) | f | f = {!!} 
 
 subLemma v Δ A prf | t | f | eq | eq2 = {!!}
 subLemma v Δ A prf | f | _ | _ | _  = refl
 
+{-
+-- 2016-01-08 こういうのがあると嬉しいかとおもったがそうでもないか。
+open import Relation.Nullary.Negation using (contradiction)
+open import Data.Empty using (⊥-elim)
+contradiction2 : ∀ {p w} {P : Set p} {Whatever : Set w} → ∀ v A → v ⟦ A ⟧ ≈ t → v ⟦ A ⟧ ≈ f → Whatever
+contradiction2 v A prf-t prf-f = {!!}
+-}
 
---open import Relation.Nullary.Negation using (contradiction)
 Lemma1-7-2 : ∀ S1 S2 S3 → S1 + S2 / ⟨ S3 ⟩ 
   → 式 S1 は トートロジー である → 式 S2 は トートロジー である → 式 S3 は トートロジー である
 -- weakening左
