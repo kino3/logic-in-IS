@@ -120,26 +120,6 @@ Lemma1-7-1 .([ A ] ⟶ [ A ]) (init A) v with v ⟦ A ⟧
 Lemma1-7-1 .([ A ] ⟶ [ A ]) (init A) v | t = refl
 Lemma1-7-1 .([ A ] ⟶ [ A ]) (init A) v | f = refl
 
--- * and or are commute?
-lemma : ∀ v A Δ → v ⟦ Δ * ⟧ or v ⟦ A ⟧ ≈ v ⟦ (Δ , [ A ]) * ⟧ 
-lemma v A [] with v ⟦ A ⟧
-lemma v A [] | t = refl
-lemma v A [] | f = refl
-lemma v A (x ∷ xs) with v ⟦ A ⟧ | v ⟦ x ⟧ | inspect (_⟦_⟧ v) A | inspect (_⟦_⟧ v) x 
-lemma v A (x ∷ xs) | _ | t | _ | _ = refl
-lemma v A (x ∷ xs) | t | f | R[ eqA ] | R[ eqx ] = {!!}
-{-
-  begin        
-   (f or v ⟦ xs * ⟧) or t 
-     ≡⟨ {!!} ⟩ 
-   {!t!}
-     ≡⟨ {!!} ⟩ 
-   f or v ⟦ (xs , A ∷ []) * ⟧ 
-  ∎ --(f or v ⟦ xs * ⟧) or t ≈ f or v ⟦ (xs , A ∷ []) * ⟧
--}
-lemma v A (x ∷ xs) | f | f | R[ eqA ] | R[ eqx ] = {!!}
--- (x ∷ xs) * = x ∨ (xs *)
-
 t≡f : {Whatever : Set} (b : Bool) → b ≈ t → b ≈ f → Whatever
 t≡f t _ ()
 t≡f f () _
@@ -167,32 +147,21 @@ t≡f f () _
   t≡f (v ⟦ ([ A ] , xs) * ⟧) (cong₂ _or_ eqA eqxs) (*-is-sym v xs A f prf)
 *-is-sym v (x ∷ xs) A f prf | f | f | f | _ | _ = refl
 
-
 subLemma : ∀ v Δ A → v ⟦ (Δ , [ A ]) * ⟧ ≈ f → v ⟦ Δ * ⟧ ≈ f
-subLemma v Δ A prf with v ⟦ Δ * ⟧ | v ⟦ A ⟧ | inspect (_⟦_⟧ v) (Δ *) | inspect (_⟦_⟧ v) (A)
-subLemma v Δ A prf | t | t | R[ Δeq ] | R[ Aeq ] = 
+subLemma v Δ A prf with v ⟦ A ⟧ | inspect (_⟦_⟧ v) (A)
+subLemma v Δ A prf | t | R[ eq ] = t≡f (v ⟦ ([ A ] , Δ) * ⟧) (cong₂ _or_ eq refl) (*-is-sym v Δ A f prf)
+subLemma v Δ A prf | f | R[ eq ] = 
   begin 
-     t 
-   ≡⟨ refl ⟩ 
-     t or t
-   ≡⟨ cong₂ (λ x y → x or y) (sym Δeq) (sym Aeq) ⟩ 
-     v ⟦ Δ * ⟧ or v ⟦ A ⟧
-   ≡⟨ lemma v A Δ ⟩ 
-     v ⟦ (Δ , [ A ]) * ⟧
-   ≡⟨ prf ⟩ 
-     f 
-   ∎
-
-subLemma v Δ A prf | t | f | eq | eq2 = {!!}
-subLemma v Δ A prf | f | _ | _ | _  = refl
-
-{-
--- 2016-01-08 こういうのがあると嬉しいかとおもったがそうでもないか。
-open import Relation.Nullary.Negation using (contradiction)
-open import Data.Empty using (⊥-elim)
-contradiction2 : ∀ {p w} {P : Set p} {Whatever : Set w} → ∀ v A → v ⟦ A ⟧ ≈ t → v ⟦ A ⟧ ≈ f → Whatever
-contradiction2 v A prf-t prf-f = {!!}
--}
+    v ⟦ Δ * ⟧ 
+  ≡⟨ refl ⟩ 
+    f or v ⟦ Δ * ⟧ 
+  ≡⟨ cong₂ _or_ (sym eq) refl ⟩ 
+    v ⟦ A ⟧ or v ⟦ Δ * ⟧
+  ≡⟨ refl ⟩ 
+    v ⟦ ([ A ] , Δ) * ⟧
+  ≡⟨ *-is-sym v Δ A f prf ⟩ 
+    f 
+  ∎
 
 Lemma1-7-2 : ∀ S1 S2 S3 → S1 + S2 / ⟨ S3 ⟩ 
   → 式 S1 は トートロジー である → 式 S2 は トートロジー である → 式 S3 は トートロジー である
@@ -221,7 +190,7 @@ Lemma1-7-2 .(Γ ⟶ Δ) .n .(Γ ⟶ Δ , [ A ]) (weakening右 Γ Δ A) prf1 tt v
          f 
        ≡⟨ refl ⟩ 
          not t or f
-       ≡⟨ cong₂ (λ x y → not x or y) (sym Γeq) {!!} ⟩ --(sym (subLemma v Δ A ΔAeq)) ⟩ 
+       ≡⟨ cong₂ (λ x y → not x or y) (sym Γeq) (sym (subLemma v Δ A ΔAeq)) ⟩
          not (v ⟦ Γ ` ⟧) or v ⟦ Δ * ⟧ 
        ≡⟨ prf1 v ⟩ 
          t 
