@@ -236,12 +236,15 @@ Lemma1-7-2 .(Γ ⟶ Δ , [ A ] , [ A ]) .n .(Γ ⟶ Δ , [ A ]) (contraction右 
            t
          ∎)
         (begin 
-           not (v ⟦ Γ ` ⟧) or v ⟦ (Δ , [ A ] , [ A ]) * ⟧ 
-         ≡⟨ cong₂ (λ x y → not x or y) eqΓ {!!} ⟩ 
+           not (v ⟦ Γ ` ⟧) or v ⟦ (Δ , [ A ] , [ A ]) * ⟧
+         ≡⟨ cong₂ (λ x y → not x or y) eqΓ (lemma eqΔA) ⟩ 
            not t or f 
          ≡⟨ refl ⟩ 
            f 
          ∎)
+           where
+             lemma : v ⟦ (Δ , [ A ]) * ⟧ ≈ f → v ⟦ (Δ , [ A ] , [ A ]) * ⟧ ≈ f
+             lemma prf = ?
 Lemma1-7-2 .(Γ ⟶ Δ , [ A ] , [ A ]) .n .(Γ ⟶ Δ , [ A ]) (contraction右 Γ Δ A) prf1 prf2 v | f | _ | _ | _ = refl
 
 Lemma1-7-2 .(Γ , A ∷ B ∷ Π ⟶ Δ) .n .(Γ , B ∷ A ∷ Π ⟶ Δ) (exchange左 Γ Δ Π A B) prf1 prf2 v = {!!}
