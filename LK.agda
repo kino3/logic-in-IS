@@ -147,10 +147,10 @@ t≡f f () _
   t≡f (v ⟦ ([ A ] , xs) * ⟧) (cong₂ _or_ eqA eqxs) (*-is-sym v xs A f prf)
 *-is-sym v (x ∷ xs) A f prf | f | f | f | _ | _ = refl
 
-subLemma : ∀ v Δ A → v ⟦ (Δ , [ A ]) * ⟧ ≈ f → v ⟦ Δ * ⟧ ≈ f
-subLemma v Δ A prf with v ⟦ A ⟧ | inspect (_⟦_⟧ v) (A)
-subLemma v Δ A prf | t | R[ eq ] = t≡f (v ⟦ ([ A ] , Δ) * ⟧) (cong₂ _or_ eq refl) (*-is-sym v Δ A f prf)
-subLemma v Δ A prf | f | R[ eq ] = 
+*-elimR : ∀ v Δ A → v ⟦ (Δ , [ A ]) * ⟧ ≈ f → v ⟦ Δ * ⟧ ≈ f
+*-elimR v Δ A prf with v ⟦ A ⟧ | inspect (_⟦_⟧ v) (A)
+*-elimR v Δ A prf | t | R[ eq ] = t≡f (v ⟦ ([ A ] , Δ) * ⟧) (cong₂ _or_ eq refl) (*-is-sym v Δ A f prf)
+*-elimR v Δ A prf | f | R[ eq ] = 
   begin 
     v ⟦ Δ * ⟧ 
   ≡⟨ refl ⟩ 
@@ -170,31 +170,39 @@ Lemma1-7-2 .(Γ ⟶ Δ) .n .(A ∷ Γ ⟶ Δ) (weakening左 Γ Δ A) prf1 tt v
   with v ⟦ A ⟧ | v ⟦ Γ ` ⟧ | v ⟦ Δ * ⟧ | inspect (_⟦_⟧ v) (Γ `) | inspect (_⟦_⟧ v) (Δ *)
 Lemma1-7-2 .(Γ ⟶ Δ) .n .([ A ] , Γ ⟶ Δ) (weakening左 Γ Δ A) prf1 tt v | t | t | t | R[ Γeq ] | R[ Δeq ] = refl
 Lemma1-7-2 .(Γ ⟶ Δ) .n .([ A ] , Γ ⟶ Δ) (weakening左 Γ Δ A) prf1 tt v | t | t | f | R[ Γeq ] | R[ Δeq ] = 
-      begin 
-         f 
-       ≡⟨ refl ⟩ 
-         not t or f
-       ≡⟨ cong₂ (λ x y → not x or y) (sym Γeq) (sym Δeq) ⟩ 
-         not (v ⟦ Γ ` ⟧) or v ⟦ Δ * ⟧ 
-       ≡⟨ prf1 v ⟩ 
-         t 
-       ∎
+  t≡f (not (v ⟦ Γ ` ⟧) or v ⟦ Δ * ⟧) 
+  (begin
+      not (v ⟦ Γ ` ⟧) or v ⟦ Δ * ⟧ 
+    ≡⟨ prf1 v ⟩ 
+      t 
+   ∎) 
+  (begin
+      not (v ⟦ Γ ` ⟧) or v ⟦ Δ * ⟧ 
+    ≡⟨ cong₂ (λ x y → not x or y) Γeq Δeq ⟩ 
+      not t or f 
+    ≡⟨ refl ⟩ 
+      f 
+   ∎)
 Lemma1-7-2 .(Γ ⟶ Δ) .n .([ A ] , Γ ⟶ Δ) (weakening左 Γ Δ A) prf1 tt v | t | f | d | R[ Γeq ] | R[ Δeq ] = refl
 Lemma1-7-2 .(Γ ⟶ Δ) .n .([ A ] , Γ ⟶ Δ) (weakening左 Γ Δ A) prf1 tt v | f | c | d | R[ Γeq ] | R[ Δeq ] = refl
 -- weakening右
 Lemma1-7-2 .(Γ ⟶ Δ) .n .(Γ ⟶ Δ , [ A ]) (weakening右 Γ Δ A) prf1 tt v 
   with v ⟦ Γ ` ⟧ | v ⟦ (Δ , [ A ]) * ⟧ | inspect (_⟦_⟧ v) (Γ `) | inspect (_⟦_⟧ v) ((Δ , [ A ]) *)
 Lemma1-7-2 .(Γ ⟶ Δ) .n .(Γ ⟶ Δ , [ A ]) (weakening右 Γ Δ A) prf1 tt v | t | t | _ | _ = refl
-Lemma1-7-2 .(Γ ⟶ Δ) .n .(Γ ⟶ Δ , [ A ]) (weakening右 Γ Δ A) prf1 tt v | t | f | R[ Γeq ] | R[ ΔAeq ] = 
-      begin 
-         f 
-       ≡⟨ refl ⟩ 
-         not t or f
-       ≡⟨ cong₂ (λ x y → not x or y) (sym Γeq) (sym (subLemma v Δ A ΔAeq)) ⟩
+Lemma1-7-2 .(Γ ⟶ Δ) .n .(Γ ⟶ Δ , [ A ]) (weakening右 Γ Δ A) prf1 tt v | t | f | R[ Γeq ] | R[ ΔAeq ] =
+  t≡f (not (v ⟦ Γ ` ⟧) or v ⟦ Δ * ⟧)
+     (begin
          not (v ⟦ Γ ` ⟧) or v ⟦ Δ * ⟧ 
        ≡⟨ prf1 v ⟩ 
          t 
-       ∎
+      ∎)
+     (begin 
+         not (v ⟦ Γ ` ⟧) or v ⟦ Δ * ⟧ 
+       ≡⟨ cong₂ (λ x y → not x or y) (Γeq) (*-elimR v Δ A ΔAeq) ⟩
+         not t or f
+       ≡⟨ refl ⟩ 
+         f 
+      ∎)
 Lemma1-7-2 .(Γ ⟶ Δ) .n .(Γ ⟶ Δ , [ A ]) (weakening右 Γ Δ A) prf1 tt v | f | b2 | _ | _  = refl
 -- contraction左
 Lemma1-7-2 .([ A ] ,  [ A ] , Γ ⟶ Δ) .n .([ A ] , Γ ⟶ Δ) (contraction左 Γ Δ A) prf1 tt v 
@@ -202,7 +210,11 @@ Lemma1-7-2 .([ A ] ,  [ A ] , Γ ⟶ Δ) .n .([ A ] , Γ ⟶ Δ) (contraction左
 Lemma1-7-2 .([ A ] , [ A ] , Γ ⟶ Δ) .n .([ A ] , Γ ⟶ Δ) (contraction左 Γ Δ A) prf1 tt v | t | t | t | _ | _ | _ = refl
 Lemma1-7-2 .([ A ] , [ A ] , Γ ⟶ Δ) .n .([ A ] , Γ ⟶ Δ) (contraction左 Γ Δ A) prf1 tt v | t | t | f | R[ eqA ] | R[ eqΓ ] | R[ eqΔ ] 
   = t≡f (not (v ⟦ A ⟧ and v ⟦ A ⟧ and v ⟦ Γ ` ⟧) or v ⟦ Δ * ⟧) 
-        (prf1 v) 
+        (begin
+           not (v ⟦ A ⟧ and v ⟦ A ⟧ and v ⟦ Γ ` ⟧) or v ⟦ Δ * ⟧ 
+         ≡⟨ prf1 v ⟩ 
+           t
+         ∎)
         (begin -- and,orは右結合
            not (v ⟦ A ⟧ and v ⟦ A ⟧ and v ⟦ Γ ` ⟧) or v ⟦ Δ * ⟧ 
          ≡⟨ cong₂ (λ x y → not x or y) (cong₂ _and_ eqA (cong₂ _and_ eqA eqΓ)) eqΔ ⟩ 
@@ -218,7 +230,11 @@ Lemma1-7-2 .(Γ ⟶ Δ , A ∷ A ∷ []) .n .(Γ ⟶ Δ , A ∷ []) (contraction
 Lemma1-7-2 .(Γ ⟶ Δ , [ A ] , [ A ]) .n .(Γ ⟶ Δ , [ A ]) (contraction右 Γ Δ A) prf1 prf2 v | t | t | _ | _ = refl
 Lemma1-7-2 .(Γ ⟶ Δ , [ A ] , [ A ]) .n .(Γ ⟶ Δ , [ A ]) (contraction右 Γ Δ A) prf1 prf2 v | t | f | R[ eqΓ ] | R[ eqΔA ] 
   = t≡f (not (v ⟦ Γ ` ⟧) or v ⟦ (Δ , [ A ] , [ A ]) * ⟧) 
-        (prf1 v) 
+        (begin
+           not (v ⟦ Γ ` ⟧) or v ⟦ (Δ , [ A ] , [ A ]) * ⟧
+         ≡⟨ prf1 v ⟩ 
+           t
+         ∎)
         (begin 
            not (v ⟦ Γ ` ⟧) or v ⟦ (Δ , [ A ] , [ A ]) * ⟧ 
          ≡⟨ cong₂ (λ x y → not x or y) eqΓ {!!} ⟩ 
