@@ -246,8 +246,15 @@ Lemma1-7-2 .(Γ ⟶ Δ , [ A ] , [ A ]) .n .(Γ ⟶ Δ , [ A ]) (contraction右 
              lemma : v ⟦ (Δ , [ A ]) * ⟧ ≈ f → v ⟦ (Δ , [ A ] , [ A ]) * ⟧ ≈ f
              lemma prf = {!!}
 Lemma1-7-2 .(Γ ⟶ Δ , [ A ] , [ A ]) .n .(Γ ⟶ Δ , [ A ]) (contraction右 Γ Δ A) prf1 prf2 v | f | _ | _ | _ = refl
+-- exchange左
+Lemma1-7-2 .(Γ , A ∷ B ∷ Π ⟶ Δ) .n .(Γ , B ∷ A ∷ Π ⟶ Δ) (exchange左 Γ Δ Π A B) prf1 prf2 v 
+   with v ⟦ (Γ , [ B ] , [ A ] , Π) ⁎ ⟧ | v ⟦ Δ * ⟧ | inspect (_⟦_⟧ v) ((Γ , [ B ] , [ A ] , Π ) ⁎) | inspect (_⟦_⟧ v) (Δ *)
 
-Lemma1-7-2 .(Γ , A ∷ B ∷ Π ⟶ Δ) .n .(Γ , B ∷ A ∷ Π ⟶ Δ) (exchange左 Γ Δ Π A B) prf1 prf2 v = {!!}
+Lemma1-7-2 .(Γ , [ A ] , [ B ] , Π ⟶ Δ) .n .(Γ , [ B ] , [ A ] , Π ⟶ Δ) (exchange左 Γ Δ Π A B) prf1 prf2 v | t | t | _ | _ = refl
+Lemma1-7-2 .(Γ , [ A ] , [ B ] , Π ⟶ Δ) .n 
+           .(Γ , [ B ] , [ A ] , Π ⟶ Δ) (exchange左 Γ Δ Π A B) prf1 prf2 v | t | f | R[ eqΓ ] | R[ eqΔ ] = {!!}
+Lemma1-7-2 .(Γ , [ A ] , [ B ] , Π ⟶ Δ) .n .(Γ , [ B ] , [ A ] , Π ⟶ Δ) (exchange左 Γ Δ Π A B) prf1 prf2 v | f | _ | _ | _ = refl
+
 Lemma1-7-2 .(Γ ⟶ Δ , A ∷ B ∷ Σ) .n .(Γ ⟶ Δ , B ∷ A ∷ Σ) (exchange右 Γ Δ Σ A B) prf1 prf2 v = {!!}
 Lemma1-7-2 .(Π ⟶ Δ , A ∷ []) .(A ∷ Π ⟶ Σ) .(Γ , Π ⟶ Δ , Σ) (cut Γ Δ Π Σ A) prf1 prf2 v = {!!}
 Lemma1-7-2 .(A ∷ Γ ⟶ Δ) .n .(A ∧ B ∷ Γ ⟶ Δ) (∧左1 Γ Δ A B) prf1 prf2 v = {!!}
