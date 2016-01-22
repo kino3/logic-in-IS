@@ -259,16 +259,32 @@ Lemma1-7-2 .(Γ , [ A ] , [ B ] , Π ⟶ Δ) .n
 Lemma1-7-2 .(Γ , [ A ] , [ B ] , Π ⟶ Δ) .n 
            .(Γ , [ B ] , [ A ] , Π ⟶ Δ) (exchange左 Γ Δ Π A B) prf1 _ v | f | _ | _ | _ = refl
 -- exchange右
-Lemma1-7-2 .(Γ ⟶ Δ , [ A ] , [ B ] , Σ) .n .(Γ ⟶ Δ , [ B ] , [ A ] , Σ) (exchange右 Γ Δ Σ A B) prf1 _ v = {!!}
+Lemma1-7-2 .(Γ ⟶ Δ , [ A ] , [ B ] , Σ) .n .(Γ ⟶ Δ , [ B ] , [ A ] , Σ) (exchange右 Γ Δ Σ A B) prf1 _ v 
+   with v ⟦ Γ  ⁎ ⟧ | v ⟦ (Δ , [ B ] , [ A ] , Σ) * ⟧ | 
+      inspect (_⟦_⟧ v) (Γ ⁎) | inspect (_⟦_⟧ v) ((Δ , [ B ] , [ A ] , Σ) *)
+Lemma1-7-2 .(Γ ⟶ Δ , [ A ] , [ B ] , Σ) .n .(Γ ⟶ Δ , [ B ] , [ A ] , Σ) (exchange右 Γ Δ Σ A B) prf1 tt v | t | t | _ | _ = refl
+Lemma1-7-2 .(Γ ⟶ Δ , [ A ] , [ B ] , Σ) .n .(Γ ⟶ Δ , [ B ] , [ A ] , Σ) (exchange右 Γ Δ Σ A B) prf1 tt v | t | f | R[ eqΓ ] | R[ eqΔs ] 
+  = t≡f (not (v ⟦ Γ ⁎ ⟧) or v ⟦ (Δ , [ A ] , [ B ] , Σ) * ⟧) 
+        (prf1 v) 
+        {!!}
+Lemma1-7-2 .(Γ ⟶ Δ , [ A ] , [ B ] , Σ) .n .(Γ ⟶ Δ , [ B ] , [ A ] , Σ) (exchange右 Γ Δ Σ A B) prf1 tt v | f | t | _ | _ = refl
+Lemma1-7-2 .(Γ ⟶ Δ , [ A ] , [ B ] , Σ) .n .(Γ ⟶ Δ , [ B ] , [ A ] , Σ) (exchange右 Γ Δ Σ A B) prf1 tt v | f | f | _ | _ = refl
 -- cut
-Lemma1-7-2 .(Π ⟶ Δ , [ A ]) .([ A ] , Π ⟶ Σ) .(Γ , Π ⟶ Δ , Σ) (cut Γ Δ Π Σ A) prf1 prf2 v = {!!}
+Lemma1-7-2 .(Π ⟶ Δ , [ A ]) .([ A ] , Π ⟶ Σ) .(Γ , Π ⟶ Δ , Σ) (cut Γ Δ Π Σ A) prf1 prf2 v 
+   with v ⟦ (Γ , Π) ⁎ ⟧ | v ⟦ (Δ , Σ) * ⟧ | inspect (_⟦_⟧ v) ((Γ , Π) ⁎) | inspect (_⟦_⟧ v) ((Δ , Σ) *)
+Lemma1-7-2 .(Π ⟶ Δ , [ A ]) .([ A ] , Π ⟶ Σ) .(Γ , Π ⟶ Δ , Σ) (cut Γ Δ Π Σ A) prf1 prf2 v | t | t | _ | _ = refl
+Lemma1-7-2 .(Π ⟶ Δ , [ A ]) .([ A ] , Π ⟶ Σ) .(Γ , Π ⟶ Δ , Σ) (cut Γ Δ Π Σ A) prf1 prf2 v | t | f | R[ eqΓΠ ] | R[ eqΔΣ ] 
+   = {!!}
+Lemma1-7-2 .(Π ⟶ Δ , [ A ]) .([ A ] , Π ⟶ Σ) .(Γ , Π ⟶ Δ , Σ) (cut Γ Δ Π Σ A) prf1 prf2 v | f | t | _ | _ = refl
+Lemma1-7-2 .(Π ⟶ Δ , [ A ]) .([ A ] , Π ⟶ Σ) .(Γ , Π ⟶ Δ , Σ) (cut Γ Δ Π Σ A) prf1 prf2 v | f | f | _ | _ = refl
 -- ∧左1
 Lemma1-7-2 .([ A ] , Γ ⟶ Δ) .n .([ A ∧ B ] , Γ ⟶ Δ) (∧左1 Γ Δ A B) prf1 _ v 
   with v ⟦ A ⟧ | v ⟦ B ⟧ | v ⟦ Γ ⁎ ⟧ | v ⟦ Δ * ⟧ | inspect (_⟦_⟧ v) A | inspect (_⟦_⟧ v) (Γ ⁎) | inspect (_⟦_⟧ v) (Δ *) 
 Lemma1-7-2 .([ A ] , Γ ⟶ Δ) .n .([ A ∧ B ] , Γ ⟶ Δ) (∧左1 Γ Δ A B) prf1 _ v | t | t | t | t | _ | _ | _ = refl
 Lemma1-7-2 .([ A ] , Γ ⟶ Δ) .n .([ A ∧ B ] , Γ ⟶ Δ) (∧左1 Γ Δ A B) prf1 _ v | t | t | t | f | R[ eqA ] | R[ eqΓ ] | R[ eqΔ ] 
   = t≡f (not (v ⟦ A ⟧ and v ⟦ Γ ⁎ ⟧) or v ⟦ Δ * ⟧) 
-        (prf1 v) (cong₂ (λ x y → not x or y) (cong₂ _and_ eqA eqΓ) eqΔ)
+        (prf1 v) 
+        (cong₂ (λ x y → not x or y) (cong₂ _and_ eqA eqΓ) eqΔ)
 Lemma1-7-2 .([ A ] , Γ ⟶ Δ) .n .([ A ∧ B ] , Γ ⟶ Δ) (∧左1 Γ Δ A B) prf1 _ v | t | t | f | t | _ | _ | _ = refl
 Lemma1-7-2 .([ A ] , Γ ⟶ Δ) .n .([ A ∧ B ] , Γ ⟶ Δ) (∧左1 Γ Δ A B) prf1 _ v | t | t | f | f | _ | _ | _ = refl
 Lemma1-7-2 .([ A ] , Γ ⟶ Δ) .n .([ A ∧ B ] , Γ ⟶ Δ) (∧左1 Γ Δ A B) prf1 _ v | t | f | t | t | _ | _ | _ = refl
@@ -285,11 +301,63 @@ Lemma1-7-2 .([ A ] , Γ ⟶ Δ) .n .([ A ∧ B ] , Γ ⟶ Δ) (∧左1 Γ Δ A B
 Lemma1-7-2 .([ A ] , Γ ⟶ Δ) .n .([ A ∧ B ] , Γ ⟶ Δ) (∧左1 Γ Δ A B) prf1 _ v | f | f | f | f | _ | _ | _ = refl
 
 -- ∧左2
-Lemma1-7-2 .([ B ] , Γ ⟶ Δ) .n .([ A ∧ B ] , Γ ⟶ Δ) (∧左2 Γ Δ A B) prf1 prf2 v = {!!}
+Lemma1-7-2 .([ B ] , Γ ⟶ Δ) .n .([ A ∧ B ] , Γ ⟶ Δ) (∧左2 Γ Δ A B) prf1 _ v
+  with v ⟦ A ⟧ | v ⟦ B ⟧ | v ⟦ Γ ⁎ ⟧ | v ⟦ Δ * ⟧ | inspect (_⟦_⟧ v) B | inspect (_⟦_⟧ v) (Γ ⁎) | inspect (_⟦_⟧ v) (Δ *) 
+Lemma1-7-2 .([ B ] , Γ ⟶ Δ) .n .([ A ∧ B ] , Γ ⟶ Δ) (∧左2 Γ Δ A B) prf1 tt v | t | t | t | t | _ | _ | _ = refl
+Lemma1-7-2 .([ B ] , Γ ⟶ Δ) .n .([ A ∧ B ] , Γ ⟶ Δ) (∧左2 Γ Δ A B) prf1 tt v | t | t | t | f | R[ eqB ] | R[ eqΓ ] | R[ eqΔ ] 
+  = t≡f (not (v ⟦ B ⟧ and v ⟦ Γ ⁎ ⟧) or v ⟦ Δ * ⟧) 
+        (prf1 v) 
+        (cong₂ (λ x y → not x or y) (cong₂ _and_ eqB eqΓ) eqΔ)
+Lemma1-7-2 .([ B ] , Γ ⟶ Δ) .n .([ A ∧ B ] , Γ ⟶ Δ) (∧左2 Γ Δ A B) prf1 tt v | t | t | f | t | _ | _ | _ = refl
+Lemma1-7-2 .([ B ] , Γ ⟶ Δ) .n .([ A ∧ B ] , Γ ⟶ Δ) (∧左2 Γ Δ A B) prf1 tt v | t | t | f | f | _ | _ | _ = refl
+Lemma1-7-2 .([ B ] , Γ ⟶ Δ) .n .([ A ∧ B ] , Γ ⟶ Δ) (∧左2 Γ Δ A B) prf1 tt v | t | f | t | t | _ | _ | _ = refl
+Lemma1-7-2 .([ B ] , Γ ⟶ Δ) .n .([ A ∧ B ] , Γ ⟶ Δ) (∧左2 Γ Δ A B) prf1 tt v | t | f | t | f | _ | _ | _ = refl
+Lemma1-7-2 .([ B ] , Γ ⟶ Δ) .n .([ A ∧ B ] , Γ ⟶ Δ) (∧左2 Γ Δ A B) prf1 tt v | t | f | f | t | _ | _ | _ = refl
+Lemma1-7-2 .([ B ] , Γ ⟶ Δ) .n .([ A ∧ B ] , Γ ⟶ Δ) (∧左2 Γ Δ A B) prf1 tt v | t | f | f | f | _ | _ | _ = refl
+Lemma1-7-2 .([ B ] , Γ ⟶ Δ) .n .([ A ∧ B ] , Γ ⟶ Δ) (∧左2 Γ Δ A B) prf1 tt v | f | t | t | t | _ | _ | _ = refl
+Lemma1-7-2 .([ B ] , Γ ⟶ Δ) .n .([ A ∧ B ] , Γ ⟶ Δ) (∧左2 Γ Δ A B) prf1 tt v | f | t | t | f | _ | _ | _ = refl
+Lemma1-7-2 .([ B ] , Γ ⟶ Δ) .n .([ A ∧ B ] , Γ ⟶ Δ) (∧左2 Γ Δ A B) prf1 tt v | f | t | f | t | _ | _ | _ = refl
+Lemma1-7-2 .([ B ] , Γ ⟶ Δ) .n .([ A ∧ B ] , Γ ⟶ Δ) (∧左2 Γ Δ A B) prf1 tt v | f | t | f | f | _ | _ | _ = refl
+Lemma1-7-2 .([ B ] , Γ ⟶ Δ) .n .([ A ∧ B ] , Γ ⟶ Δ) (∧左2 Γ Δ A B) prf1 tt v | f | f | t | t | _ | _ | _ = refl
+Lemma1-7-2 .([ B ] , Γ ⟶ Δ) .n .([ A ∧ B ] , Γ ⟶ Δ) (∧左2 Γ Δ A B) prf1 tt v | f | f | t | f | _ | _ | _ = refl
+Lemma1-7-2 .([ B ] , Γ ⟶ Δ) .n .([ A ∧ B ] , Γ ⟶ Δ) (∧左2 Γ Δ A B) prf1 tt v | f | f | f | t | _ | _ | _ = refl
+Lemma1-7-2 .([ B ] , Γ ⟶ Δ) .n .([ A ∧ B ] , Γ ⟶ Δ) (∧左2 Γ Δ A B) prf1 tt v | f | f | f | f | _ | _ | _ = refl
 -- ∧右
-Lemma1-7-2 .(Γ ⟶ Δ , [ A ]) .(Γ ⟶ Δ , [ B ]) .(Γ ⟶ Δ , [ A ∧ B ]) (∧右 Γ Δ A B) prf1 prf2 v = {!!}
+Lemma1-7-2 .(Γ ⟶ Δ , [ A ]) .(Γ ⟶ Δ , [ B ]) .(Γ ⟶ Δ , [ A ∧ B ]) (∧右 Γ Δ A B) prf1 prf2 v 
+  with v ⟦ Γ ⁎ ⟧ | v ⟦ (Δ , [ A ∧ B ]) * ⟧ | inspect (_⟦_⟧ v) (Γ ⁎) | inspect (_⟦_⟧ v) ((Δ , [ A ∧ B ]) *)
+Lemma1-7-2 .(Γ ⟶ Δ , [ A ]) .(Γ ⟶ Δ , [ B ]) .(Γ ⟶ Δ , [ A ∧ B ]) (∧右 Γ Δ A B) prf1 prf2 v | t | t | _ | _ = refl
+Lemma1-7-2 .(Γ ⟶ Δ , [ A ]) .(Γ ⟶ Δ , [ B ]) .(Γ ⟶ Δ , [ A ∧ B ]) (∧右 Γ Δ A B) prf1 prf2 v | t | f | R[ eqΓ ] | R[ eqΔs ] 
+  = {!!}
+Lemma1-7-2 .(Γ ⟶ Δ , [ A ]) .(Γ ⟶ Δ , [ B ]) .(Γ ⟶ Δ , [ A ∧ B ]) (∧右 Γ Δ A B) prf1 prf2 v | f | t | _ | _ = refl
+Lemma1-7-2 .(Γ ⟶ Δ , [ A ]) .(Γ ⟶ Δ , [ B ]) .(Γ ⟶ Δ , [ A ∧ B ]) (∧右 Γ Δ A B) prf1 prf2 v | f | f | _ | _ = refl 
 -- ∨左
-Lemma1-7-2 .([ A ] , Γ ⟶ Δ) .([ B ] , Γ ⟶ Δ) .([ A ∨ B ] , Γ ⟶ Δ) (∨左 Γ Δ A B) prf1 prf2 v = {!!}
+Lemma1-7-2 .([ A ] , Γ ⟶ Δ) .([ B ] , Γ ⟶ Δ) .([ A ∨ B ] , Γ ⟶ Δ) (∨左 Γ Δ A B) prf1 prf2 v
+  with v ⟦ A ⟧ | v ⟦ B ⟧ | v ⟦ Γ ⁎ ⟧ | v ⟦ Δ * ⟧ | inspect (_⟦_⟧ v) A | inspect (_⟦_⟧ v) B | inspect (_⟦_⟧ v) (Γ ⁎) | inspect (_⟦_⟧ v) (Δ *) 
+Lemma1-7-2 .([ A ] , Γ ⟶ Δ) .([ B ] , Γ ⟶ Δ) .([ A ∨ B ] , Γ ⟶ Δ) (∨左 Γ Δ A B) prf1 prf2 v | t | t | t | t | _ | _ | _ | _ = refl
+Lemma1-7-2 .([ A ] , Γ ⟶ Δ) .([ B ] , Γ ⟶ Δ) .([ A ∨ B ] , Γ ⟶ Δ) (∨左 Γ Δ A B) prf1 prf2 v | t | t | t | f | R[ eqA ] | R[ eqB ] | R[ eqΓ ] | R[ eqΔ ] 
+  = t≡f (not (v ⟦ A ⟧ and v ⟦ Γ ⁎ ⟧) or v ⟦ Δ * ⟧) 
+        (prf1 v) 
+        (cong₂ (λ x y → not x or y) (cong₂ _and_ eqA eqΓ) eqΔ)
+Lemma1-7-2 .([ A ] , Γ ⟶ Δ) .([ B ] , Γ ⟶ Δ) .([ A ∨ B ] , Γ ⟶ Δ) (∨左 Γ Δ A B) prf1 prf2 v | t | t | f | t | _ | _ | _ | _ = refl
+Lemma1-7-2 .([ A ] , Γ ⟶ Δ) .([ B ] , Γ ⟶ Δ) .([ A ∨ B ] , Γ ⟶ Δ) (∨左 Γ Δ A B) prf1 prf2 v | t | t | f | f | _ | _ | _ | _ = refl
+Lemma1-7-2 .([ A ] , Γ ⟶ Δ) .([ B ] , Γ ⟶ Δ) .([ A ∨ B ] , Γ ⟶ Δ) (∨左 Γ Δ A B) prf1 prf2 v | t | f | t | t | _ | _ | _ | _ = refl
+Lemma1-7-2 .([ A ] , Γ ⟶ Δ) .([ B ] , Γ ⟶ Δ) .([ A ∨ B ] , Γ ⟶ Δ) (∨左 Γ Δ A B) prf1 prf2 v | t | f | t | f | R[ eqA ] | R[ eqB ] | R[ eqΓ ] | R[ eqΔ ] 
+  = t≡f (not (v ⟦ A ⟧ and v ⟦ Γ ⁎ ⟧) or v ⟦ Δ * ⟧) 
+        (prf1 v) 
+        (cong₂ (λ x y → not x or y) (cong₂ _and_ eqA eqΓ) eqΔ)
+Lemma1-7-2 .([ A ] , Γ ⟶ Δ) .([ B ] , Γ ⟶ Δ) .([ A ∨ B ] , Γ ⟶ Δ) (∨左 Γ Δ A B) prf1 prf2 v | t | f | f | t | _ | _ | _ | _ = refl
+Lemma1-7-2 .([ A ] , Γ ⟶ Δ) .([ B ] , Γ ⟶ Δ) .([ A ∨ B ] , Γ ⟶ Δ) (∨左 Γ Δ A B) prf1 prf2 v | t | f | f | f | _ | _ | _ | _ = refl
+Lemma1-7-2 .([ A ] , Γ ⟶ Δ) .([ B ] , Γ ⟶ Δ) .([ A ∨ B ] , Γ ⟶ Δ) (∨左 Γ Δ A B) prf1 prf2 v | f | t | t | t | _ | _ | _ | _ = refl
+Lemma1-7-2 .([ A ] , Γ ⟶ Δ) .([ B ] , Γ ⟶ Δ) .([ A ∨ B ] , Γ ⟶ Δ) (∨左 Γ Δ A B) prf1 prf2 v | f | t | t | f | R[ eqA ] | R[ eqB ] | R[ eqΓ ] | R[ eqΔ ] 
+  = t≡f (not (v ⟦ B ⟧ and v ⟦ Γ ⁎ ⟧) or v ⟦ Δ * ⟧) 
+        (prf2 v) 
+        (cong₂ (λ x y → not x or y) (cong₂ _and_ eqB eqΓ) eqΔ)
+Lemma1-7-2 .([ A ] , Γ ⟶ Δ) .([ B ] , Γ ⟶ Δ) .([ A ∨ B ] , Γ ⟶ Δ) (∨左 Γ Δ A B) prf1 prf2 v | f | t | f | t | _ | _ | _ | _ = refl
+Lemma1-7-2 .([ A ] , Γ ⟶ Δ) .([ B ] , Γ ⟶ Δ) .([ A ∨ B ] , Γ ⟶ Δ) (∨左 Γ Δ A B) prf1 prf2 v | f | t | f | f | _ | _ | _ | _ = refl
+Lemma1-7-2 .([ A ] , Γ ⟶ Δ) .([ B ] , Γ ⟶ Δ) .([ A ∨ B ] , Γ ⟶ Δ) (∨左 Γ Δ A B) prf1 prf2 v | f | f | t | t | _ | _ | _ | _ = refl
+Lemma1-7-2 .([ A ] , Γ ⟶ Δ) .([ B ] , Γ ⟶ Δ) .([ A ∨ B ] , Γ ⟶ Δ) (∨左 Γ Δ A B) prf1 prf2 v | f | f | t | f | _ | _ | _ | _ = refl
+Lemma1-7-2 .([ A ] , Γ ⟶ Δ) .([ B ] , Γ ⟶ Δ) .([ A ∨ B ] , Γ ⟶ Δ) (∨左 Γ Δ A B) prf1 prf2 v | f | f | f | t | _ | _ | _ | _ = refl
+Lemma1-7-2 .([ A ] , Γ ⟶ Δ) .([ B ] , Γ ⟶ Δ) .([ A ∨ B ] , Γ ⟶ Δ) (∨左 Γ Δ A B) prf1 prf2 v | f | f | f | f | _ | _ | _ | _ = refl
 -- ∨右1
 Lemma1-7-2 .(Γ ⟶ Δ , [ A ]) .n .(Γ ⟶ Δ , [ A ∨ B ]) (∨右1 Γ Δ A B) prf1 prf2 v = {!!}
 -- ∨右2
