@@ -247,26 +247,41 @@ Lemma1-7-2 .(Γ ⟶ Δ , [ A ] , [ A ]) .n .(Γ ⟶ Δ , [ A ]) (contraction右 
              lemma prf = {!!}
 Lemma1-7-2 .(Γ ⟶ Δ , [ A ] , [ A ]) .n .(Γ ⟶ Δ , [ A ]) (contraction右 Γ Δ A) prf1 prf2 v | f | _ | _ | _ = refl
 -- exchange左
-Lemma1-7-2 .(Γ , A ∷ B ∷ Π ⟶ Δ) .n .(Γ , B ∷ A ∷ Π ⟶ Δ) (exchange左 Γ Δ Π A B) prf1 prf2 v 
-   with v ⟦ (Γ , [ B ] , [ A ] , Π) ⁎ ⟧ | v ⟦ Δ * ⟧ | inspect (_⟦_⟧ v) ((Γ , [ B ] , [ A ] , Π ) ⁎) | inspect (_⟦_⟧ v) (Δ *)
+Lemma1-7-2 .(Γ , [ A ] , [ B ] , Π ⟶ Δ) .n 
+           .(Γ , [ B ] , [ A ] , Π ⟶ Δ) (exchange左 Γ Δ Π A B) prf1 prf2 v 
+   with v ⟦ (Γ , [ B ] , [ A ] , Π) ⁎ ⟧ | v ⟦ Δ * ⟧ | 
+      inspect (_⟦_⟧ v) ((Γ , [ B ] , [ A ] , Π ) ⁎) | inspect (_⟦_⟧ v) (Δ *)
 
-Lemma1-7-2 .(Γ , [ A ] , [ B ] , Π ⟶ Δ) .n .(Γ , [ B ] , [ A ] , Π ⟶ Δ) (exchange左 Γ Δ Π A B) prf1 prf2 v | t | t | _ | _ = refl
+Lemma1-7-2 .(Γ , [ A ] , [ B ] , Π ⟶ Δ) .n 
+           .(Γ , [ B ] , [ A ] , Π ⟶ Δ) (exchange左 Γ Δ Π A B) prf1 prf2 v | t | t | _ | _ = refl
 Lemma1-7-2 .(Γ , [ A ] , [ B ] , Π ⟶ Δ) .n 
            .(Γ , [ B ] , [ A ] , Π ⟶ Δ) (exchange左 Γ Δ Π A B) prf1 prf2 v | t | f | R[ eqΓ ] | R[ eqΔ ] = {!!}
-Lemma1-7-2 .(Γ , [ A ] , [ B ] , Π ⟶ Δ) .n .(Γ , [ B ] , [ A ] , Π ⟶ Δ) (exchange左 Γ Δ Π A B) prf1 prf2 v | f | _ | _ | _ = refl
-
-Lemma1-7-2 .(Γ ⟶ Δ , A ∷ B ∷ Σ) .n .(Γ ⟶ Δ , B ∷ A ∷ Σ) (exchange右 Γ Δ Σ A B) prf1 prf2 v = {!!}
-Lemma1-7-2 .(Π ⟶ Δ , A ∷ []) .(A ∷ Π ⟶ Σ) .(Γ , Π ⟶ Δ , Σ) (cut Γ Δ Π Σ A) prf1 prf2 v = {!!}
-Lemma1-7-2 .(A ∷ Γ ⟶ Δ) .n .(A ∧ B ∷ Γ ⟶ Δ) (∧左1 Γ Δ A B) prf1 prf2 v = {!!}
-Lemma1-7-2 .(B ∷ Γ ⟶ Δ) .n .(A ∧ B ∷ Γ ⟶ Δ) (∧左2 Γ Δ A B) prf1 prf2 v = {!!}
-Lemma1-7-2 .(Γ ⟶ Δ , A ∷ []) .(Γ ⟶ Δ , B ∷ []) .(Γ ⟶ Δ , A ∧ B ∷ []) (∧右 Γ Δ A B) prf1 prf2 v = {!!}
-Lemma1-7-2 .(A ∷ Γ ⟶ Δ) .(B ∷ Γ ⟶ Δ) .(A ∨ B ∷ Γ ⟶ Δ) (∨左 Γ Δ A B) prf1 prf2 v = {!!}
-Lemma1-7-2 .(Γ ⟶ Δ , A ∷ []) .n .(Γ ⟶ Δ , A ∨ B ∷ []) (∨右1 Γ Δ A B) prf1 prf2 v = {!!}
-Lemma1-7-2 .(Γ ⟶ Δ , B ∷ []) .n .(Γ ⟶ Δ , A ∨ B ∷ []) (∨右2 Γ Δ A B) prf1 prf2 v = {!!}
-Lemma1-7-2 .(Γ ⟶ Δ , A ∷ []) .(B ∷ Π ⟶ Σ) .(A ⊃ B ∷ Γ , Π ⟶ Δ , Σ) (⊃左 Γ Δ Π Σ A B) prf1 prf2 v = {!!}
-Lemma1-7-2 .(A ∷ Γ ⟶ Δ , B ∷ []) .n .(Γ ⟶ Δ , A ⊃ B ∷ []) (⊃右 Γ Δ A B) prf1 prf2 v = {!!}
-Lemma1-7-2 .(Γ ⟶ Δ , A ∷ []) .n .(¬ A ∷ Γ ⟶ Δ) (¬左 Γ Δ A) prf1 prf2 v = {!!}
-Lemma1-7-2 .(A ∷ Γ ⟶ Δ) .n .(Γ ⟶ Δ , ¬ A ∷ []) (¬右 Γ Δ A) prf1 prf2 v = {!!}
+Lemma1-7-2 .(Γ , [ A ] , [ B ] , Π ⟶ Δ) .n 
+           .(Γ , [ B ] , [ A ] , Π ⟶ Δ) (exchange左 Γ Δ Π A B) prf1 prf2 v | f | _ | _ | _ = refl
+-- exchange右
+Lemma1-7-2 .(Γ ⟶ Δ , [ A ] , [ B ] , Σ) .n .(Γ ⟶ Δ , [ B ] , [ A ] , Σ) (exchange右 Γ Δ Σ A B) prf1 prf2 v = {!!}
+-- cut
+Lemma1-7-2 .(Π ⟶ Δ , [ A ]) .([ A ] , Π ⟶ Σ) .(Γ , Π ⟶ Δ , Σ) (cut Γ Δ Π Σ A) prf1 prf2 v = {!!}
+-- ∧左1
+Lemma1-7-2 .([ A ] , Γ ⟶ Δ) .n .([ A ∧ B ] , Γ ⟶ Δ) (∧左1 Γ Δ A B) prf1 prf2 v = {!!}
+-- ∧左2
+Lemma1-7-2 .([ B ] , Γ ⟶ Δ) .n .([ A ∧ B ] , Γ ⟶ Δ) (∧左2 Γ Δ A B) prf1 prf2 v = {!!}
+-- ∧右
+Lemma1-7-2 .(Γ ⟶ Δ , [ A ]) .(Γ ⟶ Δ , [ B ]) .(Γ ⟶ Δ , [ A ∧ B ]) (∧右 Γ Δ A B) prf1 prf2 v = {!!}
+-- ∨左
+Lemma1-7-2 .([ A ] , Γ ⟶ Δ) .([ B ] , Γ ⟶ Δ) .([ A ∨ B ] , Γ ⟶ Δ) (∨左 Γ Δ A B) prf1 prf2 v = {!!}
+-- ∨右1
+Lemma1-7-2 .(Γ ⟶ Δ , [ A ]) .n .(Γ ⟶ Δ , [ A ∨ B ]) (∨右1 Γ Δ A B) prf1 prf2 v = {!!}
+-- ∨右2
+Lemma1-7-2 .(Γ ⟶ Δ , [ B ]) .n .(Γ ⟶ Δ , [ A ∨ B ]) (∨右2 Γ Δ A B) prf1 prf2 v = {!!}
+-- ⊃左
+Lemma1-7-2 .(Γ ⟶ Δ , [ A ]) .([ B ] , Π ⟶ Σ) .([ A ⊃ B ] , Γ , Π ⟶ Δ , Σ) (⊃左 Γ Δ Π Σ A B) prf1 prf2 v = {!!}
+-- ⊃右
+Lemma1-7-2 .([ A ] , Γ ⟶ Δ , [ B ]) .n .(Γ ⟶ Δ , [ A ⊃ B ]) (⊃右 Γ Δ A B) prf1 prf2 v = {!!}
+-- ¬左
+Lemma1-7-2 .(Γ ⟶ Δ , [ A ]) .n .([ ¬ A ] , Γ ⟶ Δ) (¬左 Γ Δ A) prf1 prf2 v = {!!}
+-- ¬右
+Lemma1-7-2 .([ A ] , Γ ⟶ Δ) .n .(Γ ⟶ Δ , [ ¬ A ]) (¬右 Γ Δ A) prf1 prf2 v = {!!}
 
 -- 健全性定理 定理1.7
 健全性定理 : ∀ S → 式 S は 証明可能 である → 式 S は トートロジー である
